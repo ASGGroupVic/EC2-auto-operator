@@ -1,6 +1,6 @@
 # Resi Data AWS Infrastructure Setup
 
-This repository contains environment setup for AWS accounts owned by Resi Data & Analytics team. SSH Keys and passwords has stored in RatticDB
+This repository contains environment setup for AWS accounts owned by Resi Data & Analytics team. SSH Keys and passwords have been stored in RatticDB
 
 
 Prerequisites:
