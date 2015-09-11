@@ -1,0 +1,132 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "Configure DNS records in Route 53",
+  "Parameters": {
+    "HostedZone": {
+      "Description": "Default hosted zone for records.",
+      "Type": "String"
+    }
+  },
+  "Resources": {
+    "VPCHostedZone": {
+      "Type": "AWS::Route53::HostedZone",
+      "Properties": {
+        "Name": {
+          "Ref": "HostedZone"
+        }
+      }
+    },
+    "myDNSRecord1": {
+      "Type": "AWS::Route53::RecordSet",
+      "DependsOn": "VPCHostedZone",
+      "Properties": {
+        "HostedZoneName": {
+          "Ref": "HostedZone"
+        },
+        "Name": {
+          "Ref": "HostedZone"
+        },
+        "Type": "NS",
+        "TTL": "17280",
+        "ResourceRecords": [
+          "ns-1502.awsdns-59.org.",
+          "ns-195.awsdns-24.com.",
+          "ns-869.awsdns-44.net.",
+          "ns-1651.awsdns-14.co.uk."
+        ]
+      }
+    },
+    "myDNSRecord2": {
+      "Type": "AWS::Route53::RecordSet",
+      "DependsOn": "VPCHostedZone",
+      "Properties": {
+        "HostedZoneName": {
+          "Ref": "HostedZone"
+        },
+        "Name": {
+          "Ref": "HostedZone"
+        },
+        "Type": "SOA",
+        "TTL": "900",
+        "ResourceRecords": [
+          "ns-1502.awsdns-59.org. awsdns-hostmaster.amazon.com. 1 7200 900 1209600 86400"
+        ]
+      }
+    } ,
+    "myDNSRecord3": {
+      "Type": "AWS::Route53::RecordSet",
+      "DependsOn": "VPCHostedZone",
+      "Properties": {
+        "HostedZoneName": {
+          "Ref": "HostedZone"
+        },
+        "Name": {
+          "Fn::Join":
+          [
+            "",
+            ["ntp1.far.",
+              {
+                "Ref": "HostedZone"
+              }
+            ]
+          ]
+        },
+        "Type": "CNAME",
+        "TTL": "300",
+        "ResourceRecords": [
+          "2.amazon.pool.ntp.org"
+        ]
+      }
+    },
+    "myDNSRecord4": {
+      "Type": "AWS::Route53::RecordSet",
+      "DependsOn": "VPCHostedZone",
+      "Properties": {
+        "HostedZoneName": {
+          "Ref": "HostedZone"
+        },
+        "Name": {
+          "Fn::Join":
+          [
+            "",
+            ["ntp1.near.",
+              {
+                "Ref": "HostedZone"
+              }
+            ]
+          ]
+        },
+        "Type": "CNAME",
+        "TTL": "300",
+        "ResourceRecords": [
+          "nat-a.resi-data-dev.realestate.com.au."
+        ]
+      }
+    } ,
+    "myDNSRecord5": {
+      "Type": "AWS::Route53::RecordSet",
+      "DependsOn": "VPCHostedZone",
+      "Properties": {
+        "HostedZoneName": {
+          "Ref": "HostedZone"
+        },
+        "Name": {
+          "Fn::Join":
+          [
+            "",
+            ["ntp2.near.",
+              {
+                "Ref": "HostedZone"
+              }
+            ]
+          ]
+        },
+        "Type": "CNAME",
+        "TTL": "300",
+        "ResourceRecords": [
+          "nat-b.resi-data-dev.realestate.com.au."
+        ]
+      }
+    }
+  }
+}

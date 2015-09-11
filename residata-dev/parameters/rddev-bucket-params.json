@@ -1,0 +1,14 @@
+[
+  {
+    "ParameterKey": "bucketName",
+    "ParameterValue": "agent-rpt-dev"
+  },
+  {
+    "ParameterKey": "richmondOfficeIp",
+    "ParameterValue": "203.17.253.249/32"
+  },
+  {
+    "ParameterKey": "EmailAddress",
+    "ParameterValue": "resi-data-dev@rea-group.com"
+  }
+]

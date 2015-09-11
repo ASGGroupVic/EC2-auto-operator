@@ -1,0 +1,17 @@
+{
+  "VPCIdentifier": "prod",
+  "SvcsSubnetACIDR": "",
+  "SvcsSubnetBCIDR": "",
+  "InternalIpBase": "",
+  "PublicSubnetACIDR": "",
+  "PublicSubnetBCIDR": "",
+  "NATSubnetACIDR": "",
+  "NATSubnetBCIDR": "",
+  "PrivateSubnetACIDR": "",
+  "PrivateSubnetBCIDR": "",
+  "HostedZone": "resi-data.realestate.com.au",
+  "DNSSearchPath": "ap-southeast-2.compute.internal",
+  "DNSServerAIP": "AmazonProvidedDNS",
+  "DNSServerBIP": "AmazonProvidedDNS",
+  "KeyPairPrefix": "resi-data"
+}

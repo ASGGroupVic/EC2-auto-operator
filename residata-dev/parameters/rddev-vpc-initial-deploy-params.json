@@ -1,0 +1,66 @@
+[
+  {
+    "ParameterKey": "InternalIpBase",
+    "ParameterValue": "10.49.36.0/22"
+  },
+  {
+    "ParameterKey": "PublicSubnetACIDR",
+    "ParameterValue": "10.49.36.0/27"
+  },
+  {
+    "ParameterKey": "PublicSubnetBCIDR",
+    "ParameterValue": "10.49.36.32/27"
+  },
+  {
+    "ParameterKey": "NATSubnetACIDR",
+    "ParameterValue": "10.49.36.64/27"
+  },
+  {
+    "ParameterKey": "NATSubnetBCIDR",
+    "ParameterValue": "10.49.36.96/27"
+  },
+  {
+    "ParameterKey": "PrivateSubnetACIDR",
+    "ParameterValue": "10.49.37.0/27"
+  },
+  {
+    "ParameterKey": "PrivateSubnetBCIDR",
+    "ParameterValue": "10.49.37.128/27"
+  },
+  {
+    "ParameterKey": "SvcsSubnetACIDR",
+    "ParameterValue": "10.49.38.0/27"
+  },
+  {
+    "ParameterKey": "SvcsSubnetBCIDR",
+    "ParameterValue": "10.49.38.32/27"
+  },
+  {
+    "ParameterKey": "DNSDomain",
+    "ParameterValue": "resi-data-dev.realestate.com.au"
+  },
+  {
+    "ParameterKey": "DNSSearchPath",
+    "ParameterValue": "resi-data-dev.realestate.com.au realestate.com.au"
+  },
+  {
+    "ParameterKey": "KeyPairPrefix",
+    "ParameterValue": "resi-data"
+  },
+  {
+    "ParameterKey": "DNSServerAIP",
+    "ParameterValue": "8.8.8.8"
+  },
+  {
+    "ParameterKey": "DNSServerBIP",
+    "ParameterValue": "8.8.4.4"
+  },
+  {
+    "ParameterKey": "FallbackDNSServer",
+    "ParameterValue": "8.8.4.4"
+  },
+  {
+    "ParameterKey": "ManagementSSHOrigin",
+    "ParameterValue": "203.17.253.249/32"
+  }
+]

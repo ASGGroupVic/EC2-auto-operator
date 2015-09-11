@@ -1,0 +1,30 @@
+GEM
+  remote: https://rubygems.org/
+  remote: http://rubygems.delivery.realestate.com.au/
+  specs:
+    aws-sdk-v1 (1.66.0)
+      json (~> 1.4)
+      nokogiri (>= 1.4.4)
+    chronic (0.10.2)
+    clamp (1.0.0)
+    json (1.8.3)
+    mini_portile (0.6.2)
+    multi_json (1.11.2)
+    nokogiri (1.6.6.2)
+      mini_portile (~> 0.6.0)
+    rake (10.4.2)
+    rea-aws-koolaid (0.8.2)
+      aws-sdk-v1
+      chronic (>= 0.10.2)
+      clamp (>= 1.0.0)
+      multi_json (>= 1.11.1)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  rake
+  rea-aws-koolaid!
+
+BUNDLED WITH
+   1.10.6

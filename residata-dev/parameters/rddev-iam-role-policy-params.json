@@ -1,0 +1,10 @@
+[
+  {
+    "ParameterKey": "administratorRoleName",
+    "ParameterValue": "ResiData-Dev-Admin"
+  },
+  {
+    "ParameterKey": "developerRoleName",
+    "ParameterValue": "ResiData-Dev-NormalUser"
+  }
+]

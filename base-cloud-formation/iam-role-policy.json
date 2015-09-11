@@ -1,0 +1,275 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "IAM managed policies for roles",
+  "Parameters": {
+    "administratorRoleName": {
+      "Description": "Administrator Role Name",
+      "Type": "String"
+    },
+    "developerRoleName": {
+      "Description": "Developer Role Name",
+      "Type": "String"
+    }
+  },
+  "Resources": {
+    "AllowAll": {
+      "Properties": {
+        "Description": "allow all actions",
+        "Path": "/adminManaged/",
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "*"
+              ],
+              "Effect": "Allow",
+              "Resource": "*"
+            }
+          ],
+          "Version": "2012-10-17"
+        },
+        "Roles": [
+          {
+            "Ref": "administratorRoleName"
+          },
+          {
+            "Ref": "developerRoleName"
+          }
+        ]
+      },
+      "Type": "AWS::IAM::ManagedPolicy"
+    },
+    "DenyActionsRequireAdminAccess": {
+      "Properties": {
+        "Description": "Deny actions that require admin access",
+        "Path": "/adminManaged/",
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "cloudtrail:DeleteTrail",
+                "cloudtrail:StopLogging",
+                "cloudtrail:UpdateTrail"
+              ],
+              "Effect": "Deny",
+              "Resource": "*"
+            },
+            {
+              "Action": [
+                "config:DeleteDeliveryChannel",
+                "config:PutConfigurationRecorder",
+                "config:PutDeliveryChannel",
+                "config:StopConfigurationRecorder"
+              ],
+              "Effect": "Deny",
+              "Resource": "*"
+            },
+            {
+              "Action": [
+                "iam:CreateSAMLProvider",
+                "iam:DeleteAccountAlias",
+                "iam:DeleteAccountPasswordPolicy",
+                "iam:DeleteLoginProfile",
+                "iam:DeleteSAMLProvider",
+                "iam:DeleteVirtualMFADevice",
+                "iam:ResyncMFADevice",
+                "iam:UpdateSAMLProvider"
+              ],
+              "Effect": "Deny",
+              "Resource": "*"
+            },
+            {
+              "Action": [
+                "iam:Put*",
+                "iam:Add*",
+                "iam:Create*",
+                "iam:Change*",
+                "iam:Delete*",
+                "iam:Remove*",
+                "iam:Update*",
+                "iam:Upload*",
+                "iam:Set*",
+                "iam:Pass*",
+                "iam:Attach*",
+                "iam:Detach*",
+                "iam:Resync*"
+              ],
+              "Effect": "Deny",
+              "Resource": [
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:iam::",
+                      {
+                        "Ref": "AWS::AccountId"
+                      },
+                      ":",
+                      "policy/adminManaged/*"
+                    ]
+                  ]
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:iam::",
+                      {
+                        "Ref": "AWS::AccountId"
+                      },
+                      ":",
+                      "user/adminManaged/*"
+                    ]
+                  ]
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:iam::",
+                      {
+                        "Ref": "AWS::AccountId"
+                      },
+                      ":",
+                      "group/adminManaged/*"
+                    ]
+                  ]
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:iam::",
+                      {
+                        "Ref": "AWS::AccountId"
+                      },
+                      ":",
+                      "federated-user/adminManaged/*"
+                    ]
+                  ]
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:iam::",
+                      {
+                        "Ref": "AWS::AccountId"
+                      },
+                      ":",
+                      "mfa/adminManaged/*"
+                    ]
+                  ]
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:iam::",
+                      {
+                        "Ref": "AWS::AccountId"
+                      },
+                      ":",
+                      "server-certificate/adminManaged/*"
+                    ]
+                  ]
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:iam::",
+                      {
+                        "Ref": "AWS::AccountId"
+                      },
+                      ":",
+                      "role/adminManaged/*"
+                    ]
+                  ]
+                }
+              ]
+            },
+            {
+              "Action": [
+                "aws-portal:Modify*"
+              ],
+              "Effect": "Deny",
+              "Resource": "*"
+            },
+            {
+              "Effect": "Deny",
+              "Action": "sts:AssumeRole",
+              "Resource":  [ {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:aws:iam::",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    "role/*"
+                  ]
+                ]
+              }],
+              "Condition": {
+                "StringLike": {
+                  "aws:SourceArn": "arn:aws:iam::*:assumed-role/*"
+                }
+              },
+              "Sid": "CannotAssumeRolesInThisAccount"
+            },
+            {
+              "Effect": "Deny",
+              "Action": [
+                "ec2:AssociateDhcpOptions",
+                "ec2:AssociateRouteTable",
+                "ec2:Attach*Gateway",
+                "ec2:Create*Gateway",
+                "ec2:CreateNetworkAcl*",
+                "ec2:CreateRoute*",
+                "ec2:CreateSubnet",
+                "ec2:CreateVpc*",
+                "ec2:CreateVpn*",
+                "ec2:Delete*Gateway",
+                "ec2:DeleteDhcp*",
+                "ec2:DeleteNetworkAcl*",
+                "ec2:DeleteRoute*",
+                "ec2:DeleteSubnet*",
+                "ec2:DeleteVpc*",
+                "ec2:DeleteVpn*",
+                "ec2:Detach*Gateway",
+                "ec2:DisassociateRouteTable",
+                "ec2:Replace*"
+              ],
+              "Resource": [
+                "*"
+              ],
+              "Sid": "DenyChangeVPCParameters"
+            },
+            {
+              "Effect": "Deny",
+              "Action": "rds:DeleteDBInstance",
+              "Resource": "arn:aws:rds:*:*:db:*",
+              "Condition": {
+                "StringEquals": {
+                  "rds:db-tag/deletion-protection": [
+                    "true"
+                  ]
+                }
+              },
+              "Sid": "HonorDeletionProtectionOnRDSDBInstances"
+            }
+          ],
+          "Version": "2012-10-17"
+        },
+        "Roles": [
+          {
+            "Ref": "developerRoleName"
+          }
+        ]
+      },
+      "Type": "AWS::IAM::ManagedPolicy"
+    }
+  }
+}
