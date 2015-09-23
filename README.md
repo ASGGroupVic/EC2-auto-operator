@@ -8,7 +8,7 @@ Prerequisites:
 - An account is ready in AWS
 - Been assigned a CIDR block for your VPC
 - Created a SSH keypair from EC2 in your AWS account
-- You've authenticated as Admin in your AWS session
+- You've login as Admin in your AWS session
 
 
 ## Usage
