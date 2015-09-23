@@ -79,7 +79,8 @@
                     "cloudformation:Describe*",
                     "cloudformation:UpdateStack",
                     "cloudformation:List*"
-                  ]
+                  ],
+                  "Resource": "*"
                 }
               ]
             }
