@@ -14,19 +14,7 @@
               "Sid": "",
               "Effect": "Allow",
               "Principal": {
-                "AWS": {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:aws:iam::",
-                      {
-                        "Ref": "AWS::AccountId"
-                      },
-                      ":",
-                      "role/build-robot"
-                    ]
-                  ]
-                }
+                "Service": [ "ec2.amazonaws.com" ]
               },
               "Action": "sts:AssumeRole"
             }
