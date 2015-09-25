@@ -55,6 +55,7 @@
                     "elasticloadbalancing:*",
                     "iam:AddRoleToInstanceProfile",
                     "iam:CreateInstanceProfile",
+                    "iam:ListAccountAliases",
                     "iam:CreateRole",
                     "iam:DeleteInstanceProfile",
                     "iam:DeleteRolePolicy",
