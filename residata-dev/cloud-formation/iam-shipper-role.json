@@ -14,7 +14,7 @@
               "Sid": "",
               "Effect": "Allow",
               "Principal": {
-                "Service": [ "ec2.amazonaws.com" ]
+                "AWS": "arn:aws:iam::871035937574:root"
               },
               "Action": "sts:AssumeRole"
             }
