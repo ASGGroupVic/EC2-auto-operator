@@ -210,7 +210,7 @@
         }
       }
     },
-    "AgentReportBucketName":{
+    "AgentReportBucket":{
       "Type":"AWS::S3::Bucket",
       "Properties":{
         "AccessControl":"Private",
@@ -259,7 +259,7 @@
         "177242442824":"Residata-Dev"
       },
       "DependsOn": [
-        "AgentReportBucketName"
+        "AgentReportBucket"
       ],
       "Properties":{
         "Bucket":{

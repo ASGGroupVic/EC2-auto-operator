@@ -23,20 +23,20 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="create-bucket.json" pinned="false" current-in-tab="false">
+      <file leaf-file-name="create-bucket.json" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/base-cloud-formation/create-bucket.json">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="53.17647">
-              <caret line="112" column="31" selection-start-line="112" selection-start-column="25" selection-end-line="112" selection-end-column="31" />
+            <state vertical-scroll-proportion="0.8705234">
+              <caret line="267" column="70" selection-start-line="267" selection-start-column="26" selection-end-line="267" selection-end-column="26" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="rddev-bucket-params.json" pinned="false" current-in-tab="true">
+      <file leaf-file-name="rddev-bucket-params.json" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/residata-dev/parameters/rddev-bucket-params.json">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.3846154">
+            <state vertical-scroll-proportion="-6.25">
               <caret line="10" column="40" selection-start-line="10" selection-start-column="40" selection-end-line="10" selection-end-column="40" />
               <folding />
             </state>
@@ -800,18 +800,18 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/base-cloud-formation/create-bucket.json">
+    <entry file="file://$PROJECT_DIR$/residata-dev/parameters/rddev-bucket-params.json">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="53.17647">
-          <caret line="112" column="31" selection-start-line="112" selection-start-column="25" selection-end-line="112" selection-end-column="31" />
+        <state vertical-scroll-proportion="-6.25">
+          <caret line="10" column="40" selection-start-line="10" selection-start-column="40" selection-end-line="10" selection-end-column="40" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/residata-dev/parameters/rddev-bucket-params.json">
+    <entry file="file://$PROJECT_DIR$/base-cloud-formation/create-bucket.json">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.3846154">
-          <caret line="10" column="40" selection-start-line="10" selection-start-column="40" selection-end-line="10" selection-end-column="40" />
+        <state vertical-scroll-proportion="0.8705234">
+          <caret line="267" column="70" selection-start-line="267" selection-start-column="26" selection-end-line="267" selection-end-column="26" />
           <folding />
         </state>
       </provider>
