@@ -72,6 +72,14 @@
                   "Effect": "Allow",
                   "Resource": "*"
                 },
+		{
+              	"Resource": [
+                     "arn:aws:s3:::rea-residata-dev-ami-register/*",
+                     "arn:aws:s3:::rea-residata-dev-ami-register"
+              		],
+              	"Action": "s3:*",
+              	"Effect": "Allow"
+ 	        },
                 {
                   "Effect": "Allow",
                   "Action": [
