@@ -250,8 +250,11 @@
     "AgentReportBucketNamePolicy":{
       "Type":"AWS::S3::BucketPolicy",
       "Metadata":{
-        "177242442824":"Residata Dev"
+        "177242442824":"Residata-Dev"
       },
+      "DependsOn": [
+        "AgentReportBucketName"
+      ],
       "Properties":{
         "Bucket":{
           "Ref":"agentReportBucketName"
