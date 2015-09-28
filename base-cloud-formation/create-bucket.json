@@ -11,7 +11,7 @@
       "Type":"String",
       "Default":"rea-residata-dev-docker"
     },
-    "AgentReportBucketName":{
+    "agentReportBucketName":{
       "Description":"Name of S3 bucket for residata agent reports",
       "Type":"String",
       "Default":"agent-rpt-dev"
@@ -209,7 +209,7 @@
       "Properties":{
         "AccessControl":"Private",
         "BucketName":{
-          "Ref":"AgentReportBucketName"
+          "Ref":"agentReportBucketName"
         },
         "LifecycleConfiguration": {
           "Rules": [
@@ -254,7 +254,7 @@
       },
       "Properties":{
         "Bucket":{
-          "Ref":"AgentReportBucketName"
+          "Ref":"agentReportBucketName"
         },
         "PolicyDocument":{
           "Statement":[
@@ -276,7 +276,7 @@
                     [
                       "arn:aws:s3:::",
                       {
-                        "Ref":"AgentReportBucketName"
+                        "Ref":"agentReportBucketName"
                       }
                     ]
                   ]
@@ -287,7 +287,7 @@
                     [
                       "arn:aws:s3:::",
                       {
-                        "Ref":"AgentReportBucketName"
+                        "Ref":"agentReportBucketName"
                       },
                       "/*"
                     ]

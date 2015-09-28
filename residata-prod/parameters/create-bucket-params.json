@@ -8,7 +8,7 @@
     "ParameterValue": "rea-residata-docker"
   },
   {
-    "ParameterKey": "AgentReportBucketName",
+    "ParameterKey": "agentReportBucketName",
     "ParameterValue": "agent-rpt"
   },
   {
