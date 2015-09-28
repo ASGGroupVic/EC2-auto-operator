@@ -9,8 +9,8 @@ def update_stack(stack_name, template_file, settings_file = nil)
 end
 
 namespace :residata_dev do
-  desc "Create DNS records in route53 in ResiDataDEV account"
-  task :create_dev_route53 do
+  desc "Onceoff task-Create DNS records in route53 in ResiDataDEV account"
+  task :Onceoff_create_dev_route53 do
     update_stack('DEV-dns-route53', 'base-cloud-formation/dns-route53-vpc.json', 'residata-dev/parameters/rddev-dns-route53-params.json')
   end
 
@@ -43,8 +43,8 @@ end
 
 namespace :residata_prod do
 
-  desc "Deploy route53 stack to ResiData-Prod account"
-  task :create_prod_route53 do
+  desc "Onceoff-Deploy route53 stack to ResiData-Prod account"
+  task :onceoff_create_prod_route53 do
     update_stack('prod-route53', 'residata-prod/cloud-formation/additional-route53-zone.json', 'residata-prod/parameters/dns-route53-params.json')
     end
 

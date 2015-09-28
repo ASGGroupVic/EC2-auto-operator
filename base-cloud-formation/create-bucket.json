@@ -1,25 +1,215 @@
 {
-  "AWSTemplateFormatVersion": "2010-09-09",
-  "Description": "S3 Bucket For resi data",
-  "Parameters": {
-    "bucketName": {
-      "Type": "String"
+  "AWSTemplateFormatVersion":"2010-09-09",
+  "Description":"S3 Buckets for Resi Data Analytics",
+  "Parameters":{
+    "amiRegisterBucketName":{
+      "Description":"Name of S3 bucket for registered AMIs",
+      "Type":"String"
     },
-    "richmondOfficeIp": {
-      "Default": "203.17.253.249/32",
-      "Type": "String"
+    "dockerBucketName":{
+      "Description":"Name of S3 bucket for resi data docker stuffs",
+      "Type":"String",
+      "Default":"rea-residata-dev-docker"
+    },
+    "AgentReportBucketName":{
+      "Description":"Name of S3 bucket for residata agent reports",
+      "Type":"String",
+      "Default":"agent-rpt-dev"
+    },
+    "elasticLoadBalancingBucketName":{
+      "Description":"Name of S3 bucket for elb logs",
+      "Type":"String",
+      "Default":"rea-residata-dev-elb"
     },
     "EmailAddress": {
+      "Description":"Name of S3 bucket contract info",
       "Default": "resi-data-dev@rea-group.com",
       "Type": "String"
     }
   },
-  "Resources": {
-    "S3Bucket": {
-      "Properties": {
-        "AccessControl": "BucketOwnerFullControl",
-        "BucketName": {
-          "Ref": "bucketName"
+  "Resources":{
+    "AmiRegisterBucket":{
+      "Type":"AWS::S3::Bucket",
+      "Properties":{
+        "AccessControl":"Private",
+        "BucketName":{
+          "Ref":"amiRegisterBucketName"
+        },
+        "Tags":[
+          {
+            "Key":"contact",
+            "Value":{"Ref": "EmailAddress"}
+          }
+        ]
+      }
+    },
+    "AmiRegisterBucketPolicy":{
+      "Type":"AWS::S3::BucketPolicy",
+      "Properties":{
+        "Bucket":{
+          "Ref":"AmiRegisterBucket"
+        },
+        "PolicyDocument":{
+          "Statement":[
+            {
+              "Principal":{
+                "AWS":[
+                  "arn:aws:iam::177242442824:root"
+                ]
+              },
+              "Action":[
+                "s3:Get*",
+                "s3:List*"
+              ],
+              "Effect":"Allow",
+              "Resource":[
+                {
+                  "Fn::Join":[
+                    "",
+                    [
+                      "arn:aws:s3:::",
+                      {
+                        "Ref":"amiRegisterBucketName"
+                      }
+                    ]
+                  ]
+                },
+                {
+                  "Fn::Join":[
+                    "",
+                    [
+                      "arn:aws:s3:::",
+                      {
+                        "Ref":"amiRegisterBucketName"
+                      },
+                      "/*"
+                    ]
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "DockerBucket":{
+      "Type":"AWS::S3::Bucket",
+      "Properties":{
+        "AccessControl":"Private",
+        "BucketName":{
+          "Ref":"dockerBucketName"
+        },
+        "Tags":[
+          {
+            "Key":"contact",
+            "Value":{"Ref": "EmailAddress"}
+          }
+        ]
+      }
+    },
+    "ElasticLoadBalancingBucket":{
+      "Type":"AWS::S3::Bucket",
+      "Properties":{
+        "AccessControl":"Private",
+        "BucketName":{
+          "Ref":"elasticLoadBalancingBucketName"
+        },
+        "VersioningConfiguration":{
+          "Status":"Enabled"
+        }
+      }
+    },
+    "ElasticLoadBalancingBucketPolicy":{
+      "Type":"AWS::S3::BucketPolicy",
+      "Metadata":{
+        "783225319266":"ELB Account ID for Sydney",
+        "177242442824":"Residata Dev"
+      },
+      "Properties":{
+        "Bucket":{
+          "Ref":"ElasticLoadBalancingBucket"
+        },
+        "PolicyDocument":{
+          "Statement":[
+            {
+              "Principal":{
+                "AWS":"arn:aws:iam::783225319266:root"
+              },
+              "Action":"s3:Put*",
+              "Effect":"Allow",
+              "Resource":[
+                {
+                  "Fn::Join":[
+                    "",
+                    [
+                      "arn:aws:s3:::",
+                      {
+                        "Ref":"elasticLoadBalancingBucketName"
+                      }
+                    ]
+                  ]
+                },
+                {
+                  "Fn::Join":[
+                    "",
+                    [
+                      "arn:aws:s3:::",
+                      {
+                        "Ref":"elasticLoadBalancingBucketName"
+                      },
+                      "/*"
+                    ]
+                  ]
+                }
+              ]
+            },
+            {
+              "Principal":{
+                "AWS":[
+                  "arn:aws:iam::177242442824:root"
+                ]
+              },
+              "Action":[
+                "s3:Get*",
+                "s3:List*"
+              ],
+              "Effect":"Allow",
+              "Resource":[
+                {
+                  "Fn::Join":[
+                    "",
+                    [
+                      "arn:aws:s3:::",
+                      {
+                        "Ref":"elasticLoadBalancingBucketName"
+                      }
+                    ]
+                  ]
+                },
+                {
+                  "Fn::Join":[
+                    "",
+                    [
+                      "arn:aws:s3:::",
+                      {
+                        "Ref":"elasticLoadBalancingBucketName"
+                      },
+                      "/*"
+                    ]
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "AgentReportBucketName":{
+      "Type":"AWS::S3::Bucket",
+      "Properties":{
+        "AccessControl":"Private",
+        "BucketName":{
+          "Ref":"AgentReportBucketName"
         },
         "LifecycleConfiguration": {
           "Rules": [
@@ -37,14 +227,14 @@
               "Transition": {
                 "StorageClass": "Glacier",
                 "TransitionInDays": "180"
-               }
+              }
             }
           ]
         },
-        "Tags": [
+        "Tags":[
           {
             "Key": "application",
-            "Value": "Resi Data Store"
+            "Value": "Agent Reports"
           },
           {
             "Key": "contact",
@@ -55,88 +245,59 @@
             "Value": "Resi Data Analytics"
           }
         ]
-      },
-      "Type": "AWS::S3::Bucket"
+      }
     },
-    "S3BucketPolicy": {
-      "DependsOn": [
-        "S3Bucket"
-      ],
-      "Properties": {
-        "Bucket": {
-          "Ref": "S3Bucket"
+    "AgentReportBucketNamePolicy":{
+      "Type":"AWS::S3::BucketPolicy",
+      "Metadata":{
+        "177242442824":"Residata Dev"
+      },
+      "Properties":{
+        "Bucket":{
+          "Ref":"AgentReportBucketName"
         },
-        "PolicyDocument": {
-          "Statement": [
+        "PolicyDocument":{
+          "Statement":[
             {
-              "Action": [
-                "s3:DeleteBucketPolicy",
-                "s3:DeleteObject",
-                "s3:DeleteObjectVersion",
-                "s3:PutBucketAcl",
-                "s3:PutBucketLogging",
-                "s3:PutBucketPolicy",
-                "s3:PutBucketVersioning",
-                "s3:PutLifecycleConfiguration",
-                "s3:PutObjectAcl",
-                "s3:PutObjectVersionAcl"
-              ],
-              "Condition": {
-                "IpAddress": {
-                  "aws:SourceIp": {
-                    "Ref": "richmondOfficeIp"
-                  }
-                }
-              },
-              "Effect": "Allow",
-              "Principal": {
-                "AWS": [
-                  {
-                    "Fn::Join": [
-                      "",
-                      [
-                        "arn:aws:iam::",
-                        {
-                          "Ref": "AWS::AccountId"
-                        },
-                        ":root"
-                      ]
-                    ]
-                  }
+              "Principal":{
+                "AWS":[
+                  "arn:aws:iam::177242442824:root"
                 ]
               },
-              "Resource": [
+              "Action":[
+                "s3:Get*",
+                "s3:List*"
+              ],
+              "Effect":"Allow",
+              "Resource":[
                 {
-                  "Fn::Join": [
+                  "Fn::Join":[
                     "",
                     [
                       "arn:aws:s3:::",
                       {
-                        "Ref": "bucketName"
+                        "Ref":"AgentReportBucketName"
                       }
                     ]
                   ]
                 },
                 {
-                  "Fn::Join": [
+                  "Fn::Join":[
                     "",
                     [
                       "arn:aws:s3:::",
                       {
-                        "Ref": "bucketName"
+                        "Ref":"AgentReportBucketName"
                       },
                       "/*"
                     ]
                   ]
                 }
-              ],
-              "Sid": "only-allow-rea-ip-to-change-bucket-policies"
+              ]
             }
-          ],
-          "Version": "2012-10-17"
+          ]
         }
-      },
-      "Type": "AWS::S3::BucketPolicy"
+      }
     }
   }
 }
