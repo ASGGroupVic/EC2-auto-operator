@@ -45,9 +45,12 @@
     },
     "AmiRegisterBucketPolicy":{
       "Type":"AWS::S3::BucketPolicy",
+      "DependsOn": [
+        "AmiRegisterBucket"
+      ],
       "Properties":{
         "Bucket":{
-          "Ref":"AmiRegisterBucket"
+          "Ref":"amiRegisterBucketName"
         },
         "PolicyDocument":{
           "Statement":[
@@ -125,6 +128,9 @@
         "783225319266":"ELB Account ID for Sydney",
         "177242442824":"Residata Dev"
       },
+      "DependsOn": [
+        "ElasticLoadBalancingBucket"
+      ],
       "Properties":{
         "Bucket":{
           "Ref":"ElasticLoadBalancingBucket"
