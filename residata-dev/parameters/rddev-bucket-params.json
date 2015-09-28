@@ -14,5 +14,9 @@
   {
     "ParameterKey": "EmailAddress",
     "ParameterValue": "resi-data-dev@rea-group.com"
+  },
+  {
+    "ParameterKey": "principalList",
+    "ParameterValue": "arn:aws:iam::177242442824:root,arn:aws:iam::871035937574:root"
   }
 ]

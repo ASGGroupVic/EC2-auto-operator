@@ -25,6 +25,10 @@
       "Description":"Name of S3 bucket contract info",
       "Default": "resi-data-dev@rea-group.com",
       "Type": "String"
+    } ,
+    "principalList": {
+      "Description":"list of AWS AccountIDs that permitted access",
+      "Type": "CommaDelimitedList"
     }
   },
   "Resources":{
@@ -57,7 +61,8 @@
             {
               "Principal":{
                 "AWS":[
-                  "arn:aws:iam::177242442824:root"
+                  "arn:aws:iam::177242442824:root",
+                  "arn:aws:iam::871035937574:root"
                 ]
               },
               "Action":[
@@ -172,7 +177,8 @@
             {
               "Principal":{
                 "AWS":[
-                  "arn:aws:iam::177242442824:root"
+                  "arn:aws:iam::177242442824:root",
+                  "arn:aws:iam::871035937574:root"
                 ]
               },
               "Action":[
@@ -270,7 +276,8 @@
             {
               "Principal":{
                 "AWS":[
-                  "arn:aws:iam::177242442824:root"
+                  "arn:aws:iam::177242442824:root",
+                  "arn:aws:iam::871035937574:root"
                 ]
               },
               "Action":[
