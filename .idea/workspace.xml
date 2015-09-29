@@ -2,14 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="43a105f4-effc-4fa3-9b95-5e61786af742" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/residata-dev/parameters/rddev-securitygroup-params.json" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/residata-prod/parameters/security-group-params.json" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/base-cloud-formation/security-group.json" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/base-cloud-formation/.gitignore" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gitignore" afterPath="$PROJECT_DIR$/.gitignore" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/.rakeTasks" afterPath="$PROJECT_DIR$/.idea/.rakeTasks" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Rakefile" afterPath="$PROJECT_DIR$/Rakefile" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="residata-aws-infrastructure.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -33,8 +26,8 @@
       <file leaf-file-name="Rakefile" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Rakefile">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.6088957">
-              <caret line="76" column="140" selection-start-line="76" selection-start-column="59" selection-end-line="76" selection-end-column="59" />
+            <state vertical-scroll-proportion="0.44785276">
+              <caret line="63" column="62" selection-start-line="63" selection-start-column="5" selection-end-line="63" selection-end-column="5" />
               <folding />
             </state>
           </provider>
@@ -839,8 +832,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Rakefile">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.6088957">
-          <caret line="76" column="140" selection-start-line="76" selection-start-column="59" selection-end-line="76" selection-end-column="59" />
+        <state vertical-scroll-proportion="0.44785276">
+          <caret line="63" column="62" selection-start-line="63" selection-start-column="5" selection-end-line="63" selection-end-column="5" />
           <folding />
         </state>
       </provider>

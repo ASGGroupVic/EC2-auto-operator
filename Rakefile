@@ -54,7 +54,7 @@ namespace :residata_prod do
     end
 
   desc "Create a deployment role to Prod"
-  task :create_dev_shipperrole do
+  task :create_prod_shipperrole do
     update_stack('deployment-role', 'residata-prod/cloud-formation/iam-shipper-role.json')
     end
 
