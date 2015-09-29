@@ -37,7 +37,12 @@ namespace :residata_dev do
   desc "Create DEV S3 Bucket for data storage"
   task :create_dev_bucket do
   update_stack('DEV-bucket', 'base-cloud-formation/create-bucket.json', 'residata-dev/parameters/rddev-bucket-params.json')
-end
+  end
+
+  desc "Create SSH,HTTP,HTTPS only Seucrity Groups"
+  task :create_dev_SG do
+    update_stack('DEV-SecurityGroup', 'base-cloud-formation/security-group.json', 'residata-dev/parameters/rddev-securitygroup-params.json')
+  end
 end
 
 
@@ -45,34 +50,38 @@ namespace :residata_prod do
 
   desc "Onceoff-Deploy route53 stack to Prod"
   task :onceoff_create_prod_route53 do
-    update_stack('prod-route53', 'residata-prod/cloud-formation/additional-route53-zone.json', 'residata-prod/parameters/dns-route53-params.json')
+    update_stack('route53', 'residata-prod/cloud-formation/additional-route53-zone.json', 'residata-prod/parameters/dns-route53-params.json')
     end
 
   desc "Create a deployment role to Prod"
   task :create_dev_shipperrole do
-    update_stack('prod-deployment-role', 'residata-prod/cloud-formation/iam-shipper-role.json')
+    update_stack('deployment-role', 'residata-prod/cloud-formation/iam-shipper-role.json')
     end
 
   desc "Create IAM Managed Policy for federated roles"
   task :create_prod_iam_role_policies do
-    update_stack('prod-iam-role-policies', 'base-cloud-formation/iam-role-policy.json', 'residata-prod/parameters/iam-managed-role-policy-params.json')
+    update_stack('federated-role-policies', 'base-cloud-formation/iam-role-policy.json', 'residata-prod/parameters/iam-managed-role-policy-params.json')
   end
 
   desc "Create S3 Bucket in Prod account"
   task :create_prod_bucket do
-    update_stack('prod-bucket', 'base-cloud-formation/create-bucket.json', 'residata-prod/parameters/create-bucket-params.json')
+    update_stack('s3bucket', 'base-cloud-formation/create-bucket.json', 'residata-prod/parameters/create-bucket-params.json')
   end
 
   desc "Deploy VPC stack to ResiData-Prod account"
   task :deploy_prod_vpc do
-    update_stack('prod-vpc', 'base-cloud-formation/resi-data-vpc.json', 'residata-prod/parameters/vpc-params.json')
+    update_stack('vpc', 'base-cloud-formation/resi-data-vpc.json', 'residata-prod/parameters/vpc-params.json')
   end
 
 
   desc "Add additional ACL to PublicSubnet in Prod account"
   task :add_additional_ACL do
-    update_stack('prod-additional-ACL', 'residata-prod/cloud-formation/additional-public-subnet-acl-rules.json', 'residata-prod/parameters/additional-public-subnet-acl-rules-params.json')
+    update_stack('additional-ACL', 'residata-prod/cloud-formation/additional-public-subnet-acl-rules.json', 'residata-prod/parameters/additional-public-subnet-acl-rules-params.json')
   end
 
 
+  desc "Create SSH,HTTP,HTTPS only Seucrity Groups"
+  task :create_prod_SG do
+    update_stack('SSHSecurityGroup', 'base-cloud-formation/security-group.json', 'residata-prod/parameters/security-group-params.json')
+  end
 end
