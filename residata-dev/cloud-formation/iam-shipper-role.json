@@ -92,7 +92,15 @@
                     "cloudformation:List*"
                   ] ,
                   "Resource": "*"
-                }
+                },
+               {		
+           	 "Sid": "PackerIAMPassRole",
+            	 "Effect": "Allow",
+            	 "Action": "iam:PassRole",
+            	 "Resource": [
+                       "*"
+            	  ]
+        	}		
               ]
             }
           }
