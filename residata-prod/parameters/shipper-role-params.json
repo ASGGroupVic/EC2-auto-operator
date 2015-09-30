@@ -1,0 +1,6 @@
+[
+  {
+    "ParameterKey": "s3resourcelist",
+    "ParameterValue": "arn:aws:s3:::rea-residata-ami-register, arn:aws:s3:::rea-residata-ami-register/*"
+  }
+]

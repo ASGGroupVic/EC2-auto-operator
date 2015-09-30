@@ -1,7 +1,12 @@
 {
   "AWSTemplateFormatVersion": "2010-09-09",
   "Description": "Assumable Role for deployment used by residata-shipper",
-  "Parameters": {},
+  "Parameters": {
+    "s3resourcelist": {
+      "Description":"list of resources allows s3 permission",
+      "Type": "CommaDelimitedList"
+    }
+  },
   "Resources": {
     "ShipperRole": {
       "Type": "AWS::IAM::Role",
@@ -125,7 +130,6 @@
                     "route53:GetChange",
                     "route53:ListHealthChecks",
                     "route53:ListHostedZones",
-                    "s3:*",
                     "sdb:ListDomains",
                     "sts:AssumeRole"
                   ],
@@ -133,10 +137,7 @@
                   "Resource": "*"
                 },
 		        {
-              	  "Resource": [
-                     "arn:aws:s3:::rea-residata-dev-ami-register/*",
-                     "arn:aws:s3:::rea-residata-dev-ami-register"
-              		],
+              	  "Resource": {"Ref":"s3resourcelist"},
               	  "Action": "s3:*",
               	  "Effect": "Allow"
  	            },

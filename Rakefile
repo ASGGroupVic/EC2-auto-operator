@@ -22,7 +22,7 @@ namespace :residata_dev do
 
   desc "Create a deployment role in ResiDataDEV account"
   task :create_dev_shipperrole do
-    update_stack('DEV-iam-role', 'residata-dev/cloud-formation/iam-shipper-role.json')
+    update_stack('DEV-iam-role', 'base-cloud-formation/iam-shipper-role.json','residata-dev/parameters/rddev-shipper-role-params.json')
   end
 
   desc "Create IAM Policy for federated role in DEV"
@@ -61,7 +61,7 @@ namespace :residata_prod do
 
   desc "Create a deployment role to Prod"
   task :create_prod_shipperrole do
-    update_stack('deployment-role', 'residata-prod/cloud-formation/iam-shipper-role.json')
+    update_stack('deployment-role', 'base-cloud-formation/iam-shipper-role.json','residata-prod/parameters/shipper-role-params.json')
     end
 
   desc "Create IAM Managed Policy for federated roles"
