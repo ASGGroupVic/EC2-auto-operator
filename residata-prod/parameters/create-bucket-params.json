@@ -4,8 +4,8 @@
     "ParameterValue": "rea-residata-ami-register"
   },
   {
-    "ParameterKey": "dockerBucketName",
-    "ParameterValue": "rea-residata-docker"
+    "ParameterKey": "elasticLoadBalancingBucketName",
+    "ParameterValue": "rea-residata-elb"
   },
   {
     "ParameterKey": "agentReportBucketName",

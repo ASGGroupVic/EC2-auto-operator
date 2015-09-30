@@ -1,0 +1,13 @@
+{  
+   "AWSTemplateFormatVersion":"2010-09-09",
+   "Description":"SNS Topics for Information Systems",
+   "Resources":{  
+      "EventTopic":{  
+         "Type":"AWS::SNS::Topic",
+         "Properties":{  
+            "TopicName":"TheExperience",
+            "DisplayName":"residata-events"
+         }
+      }
+   }
+}

@@ -6,11 +6,6 @@
       "Description":"Name of S3 bucket for registered AMIs",
       "Type":"String"
     },
-    "dockerBucketName":{
-      "Description":"Name of S3 bucket for resi data docker stuffs",
-      "Type":"String",
-      "Default":"rea-residata-dev-docker"
-    },
     "agentReportBucketName":{
       "Description":"Name of S3 bucket for residata agent reports",
       "Type":"String",
@@ -60,10 +55,7 @@
           "Statement":[
             {
               "Principal":{
-                "AWS":[
-                  "arn:aws:iam::177242442824:root",
-                  "arn:aws:iam::871035937574:root"
-                ]
+                "AWS": {"Ref":"principalList"}
               },
               "Action":[
                 "s3:Get*",
@@ -98,21 +90,6 @@
             }
           ]
         }
-      }
-    },
-    "DockerBucket":{
-      "Type":"AWS::S3::Bucket",
-      "Properties":{
-        "AccessControl":"Private",
-        "BucketName":{
-          "Ref":"dockerBucketName"
-        },
-        "Tags":[
-          {
-            "Key":"contact",
-            "Value":{"Ref": "EmailAddress"}
-          }
-        ]
       }
     },
     "ElasticLoadBalancingBucket":{
@@ -176,10 +153,7 @@
             },
             {
               "Principal":{
-                "AWS":[
-                  "arn:aws:iam::177242442824:root",
-                  "arn:aws:iam::871035937574:root"
-                ]
+                "AWS":{"Ref":"principalList"}
               },
               "Action":[
                 "s3:Get*",
@@ -275,10 +249,7 @@
           "Statement":[
             {
               "Principal":{
-                "AWS":[
-                  "arn:aws:iam::177242442824:root",
-                  "arn:aws:iam::871035937574:root"
-                ]
+                "AWS":{"Ref":"principalList"}
               },
               "Action":[
                 "s3:Get*",

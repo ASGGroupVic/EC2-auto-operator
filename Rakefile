@@ -8,6 +8,12 @@ def update_stack(stack_name, template_file, settings_file = nil)
   end
 end
 
+namespace :residata_allEnv do
+  desc "create sns event topics"
+  task :create_sns_topics do
+    update_stack('sns_topics', 'base-cloud-formation/sns-topics.json')
+  end
+ end
 namespace :residata_dev do
   desc "Onceoff task-Create DNS records in route53 in ResiDataDEV account"
   task :Onceoff_create_dev_route53 do
