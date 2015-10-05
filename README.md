@@ -1,29 +1,50 @@
 # Resi Data AWS Infrastructure Setup
 
-This repository contains environment setup for AWS accounts owned by Resi Data & Analytics team. SSH Keys and passwords have been stored in RatticDB
+This repository contains environment setup for AWS accounts owned by Resi Data & Analytics team. SSH Keys and passwords have been stored in [RatticDB](https://rattic.eqx.realestate.com.au/cred/list-by-group/195/)
 
+##AWS Accounts
 
-Prerequisites:
-- A hosted zone name has been registered by GIA for your new VPC from your new account
-- An account is ready in AWS
-- Been assigned a CIDR block for your VPC
-- Created a SSH keypair from EC2 in your AWS account
-- You've login as Admin in your AWS session
+Dev: `residata-dev` (177242442824)
 
+##{Env} Setup
 
-## Usage
+Instructions below for {Env} = production, substitute prod for dev in Dev.
+
+Assumes you have access with TMI Admin rights, via https://idp.realestate.com.au/
+
+###Install Tools
+
+Assumes Ruby 2.1 or higher is installed.
 ```
 bundle install
 bundle exec rake -T
 
 Output:
-
 List of tasks that create/update stacks in AWS
 
-
 Example:
-
 rake residata_dev:create_dev_route53   # Create DNS zone and recordsets in route53 in your ResiDataDEV VPC
-
 ```
+
+###Create & Register Hosted Zone Name (Once-off)
+
+`rake residata_prod:onceoff_create_prod_route53`
+
+Tell GIA the name, they will register with UltraDNS
+
+- Dev is done: `resi-data-dev.realestate.com.au` 
+
+###CIDR block
+
+Request a CIDR block for your VPC
+
+- Dev is done: `10.49.36.0/22` 
+
+###SSH Keypair
+
+Created a SSH keypair from EC2 Console in your AWS account
+
+Dev: https://rattic.eqx.realestate.com.au/cred/detail/4254/
+
+
 
