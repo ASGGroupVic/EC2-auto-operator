@@ -64,7 +64,7 @@ Edit [params](residata-prod/parameters/security-group-params.json) to set `VpcId
 
 `rake residata_prod:create_prod_SG`
 
-###S3 Buckets
+###S3 Buckets (Once Off)
 
 Ensure [bucket names](residata-prod/parameters/create-bucket-params.json) are OK 
 
@@ -82,6 +82,7 @@ Ensure [bucket names](residata-prod/parameters/create-bucket-params.json) are OK
 
 ##ToDo List
 
+- Document some verification steps to test whether the environment is working correctly.
 - Create Developer IAM role that can be associated with LDAP. Currently there is only Admin. We have a [starting point](base-cloud-formation/iam-role-policy.json) but need to understand permissions better.
 
 
