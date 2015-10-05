@@ -12,6 +12,12 @@ Dev: `residata-dev` (177242442824)
 - [residata-dev/](residata-dev/):  templates & parameters for Dev
 - [residata-prod/](residata-prod/):  templates & parameters for Prod
 
+###Resi Data CI links
+
+[Agent Profile Reports](http://resi-bamboo.delivery.realestate.com.au/browse/AP)
+
+
+
 ##{Env} Setup
 
 Instructions below for {Env} = production, substitute prod for dev in Dev.
