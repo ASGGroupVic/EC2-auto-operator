@@ -6,6 +6,12 @@ This repository contains environment setup for AWS accounts owned by Resi Data &
 
 Dev: `residata-dev` (177242442824)
 
+##Repo Layout
+
+[base-cloud-formation/](base-cloud-formation/):  templates common across all environments
+[residata-dev/](residata-dev/):  templates & parameters for Dev
+[residata-prod/](residata-prod/):  templates & parameters for Prod
+
 ##{Env} Setup
 
 Instructions below for {Env} = production, substitute prod for dev in Dev.
@@ -70,6 +76,9 @@ Ensure [bucket names](residata-prod/parameters/create-bucket-params.json) are OK
 
 `rake residata_prod:create_prod_shipperrole`
 
+###SNS Topics
+
+`rake residata_allEnv:create_sns_topics`
 
 ##ToDo List
 
