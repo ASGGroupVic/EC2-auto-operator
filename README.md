@@ -46,5 +46,20 @@ Created a SSH keypair from EC2 Console in your AWS account
 
 Dev: https://rattic.eqx.realestate.com.au/cred/detail/4254/
 
+###VPC
+ 
+Set subnet [CIDR params](residata-prod/parameters/vpc-params.json) based on [dev pattern](residata-dev/parameters/rddev-vpc-params.json) but using the prod CIDR block
+
+`rake residata_prod:deploy_prod_vpc`
+
+###Security Group
+
+Edit [params](residata-prod/parameters/security-group-params.json) to set `VpcId` from output of above.
+
+`rake residata_prod:create_prod_SG`
+
+
+
+
 
 
