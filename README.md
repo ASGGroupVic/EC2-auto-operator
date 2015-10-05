@@ -70,6 +70,11 @@ Ensure [bucket names](residata-prod/parameters/create-bucket-params.json) are OK
 
 `rake residata_prod:create_prod_shipperrole`
 
-###
+
+##ToDo List
+
+- Create Developer IAM role that can be associated with LDAP. Currently there is only Admin. We have a [starting point](base-cloud-formation/iam-role-policy.json) but need to understand permissions better.
+
+
 
 
