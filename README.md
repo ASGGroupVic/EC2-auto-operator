@@ -8,9 +8,9 @@ Dev: `residata-dev` (177242442824)
 
 ##Repo Layout
 
-[base-cloud-formation/](base-cloud-formation/):  templates common across all environments
-[residata-dev/](residata-dev/):  templates & parameters for Dev
-[residata-prod/](residata-prod/):  templates & parameters for Prod
+- [base-cloud-formation/](base-cloud-formation/):  templates common across all environments
+- [residata-dev/](residata-dev/):  templates & parameters for Dev
+- [residata-prod/](residata-prod/):  templates & parameters for Prod
 
 ##{Env} Setup
 
