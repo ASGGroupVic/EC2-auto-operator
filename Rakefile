@@ -49,6 +49,11 @@ namespace :residata_dev do
   task :create_dev_SG do
     update_stack('DEV-SecurityGroup', 'base-cloud-formation/security-group.json', 'residata-dev/parameters/rddev-securitygroup-params.json')
   end
+
+  desc "Create a DEV Splunkforwarder Server"
+  task :create_dev_SplunkFw do
+    update_stack('DEV-SplunkFw', 'base-cloud-formation/splunkforwarder.json', 'residata-dev/parameters/rddev-splunkforwarder-params.json')
+  end
 end
 
 
@@ -85,9 +90,13 @@ namespace :residata_prod do
     update_stack('additional-ACL', 'residata-prod/cloud-formation/additional-public-subnet-acl-rules.json', 'residata-prod/parameters/additional-public-subnet-acl-rules-params.json')
   end
 
-
   desc "Create SSH,HTTP,HTTPS only Seucrity Groups"
   task :create_prod_SG do
     update_stack('SSHSecurityGroup', 'base-cloud-formation/security-group.json', 'residata-prod/parameters/security-group-params.json')
+  end
+
+  desc "Create a Splunkforwarder Server to Prod"
+  task :create_prod_SplunkFw do
+    update_stack('PROD-SplunkFw', 'base-cloud-formation/splunkforwarder.json', 'residata-prod/parameters/splunkforwarder-params.json')
   end
 end
