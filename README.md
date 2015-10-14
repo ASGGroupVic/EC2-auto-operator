@@ -86,6 +86,8 @@ Ensure [bucket names](residata-prod/parameters/create-bucket-params.json) are OK
 
 `rake residata_allEnv:create_sns_topics`
 
+###Splunk Forwarder
+Before setup the Forwarder, create the index resi-data via the pull request from [GIA repository](https://git.realestate.com.au/infrastructure/splunk-deployment/blob/master/ansible/roles/indexer-master/files/idxcluster/resi/local/indexes.conf) 
 ##ToDo List
 
 - Document some verification steps to test whether the environment is working correctly.

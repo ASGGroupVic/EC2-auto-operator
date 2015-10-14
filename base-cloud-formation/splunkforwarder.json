@@ -1,0 +1,548 @@
+{
+  "AWSTemplateFormatVersion":"2010-09-09",
+  "Description":"splunkforwarder",
+  "Parameters":{
+    "environment":{
+      "Description":"The 'human' name of the environment you want to deploy to.",
+      "Type":"String",
+      "AllowedValues":[
+        "dev",
+        "prod"
+      ],
+      "Default":"dev"
+    },
+    "ami":{
+      "Description":"The AMI of the splunk you want to launch",
+      "Type":"String",
+      "Default":"ami-2d0b7f17"
+    },
+    "size":{
+      "Description":"The size of the EBS volume you want to create (in GB)",
+      "Type":"Number",
+      "MinValue":"10",
+      "MaxValue":"200",
+      "Default":"20"
+    },
+    "instanceType":{
+      "Description":"The type of the EC2 instance you want",
+      "Type":"String",
+      "AllowedValues":[
+        "t2.micro",
+        "t2.small",
+        "t2.medium",
+        "m3.medium",
+        "m4.large"
+      ],
+      "Default":"t2.micro"
+    },
+    "name": {
+      "Description": "The name of this stack",
+      "Type": "String",
+      "Default": "resi-data-splunkforwarder"
+    },
+    "splunkServerHost": {
+      "Description": "The url of the splunk server we wish to forward to",
+      "Type": "String",
+      "Default": "https://splunk.skynet.realestate.com.au"
+    },
+    "splunkforwarderClientCert": {
+      "Description": "Splunk forwarder client cert",
+      "Type": "String"
+    },
+    "caCertificateChain": {
+      "Description": "CA certificate chain (for client cert)",
+      "Type": "String"
+    },
+    "resiCaCert": {
+      "Description": "Resi Certificate Authority cert",
+      "Type": "String"
+    }
+  },
+  "Mappings": {
+    "VpcMap": {
+      "dev": {
+        "vpc": "vpc-e702ad82",
+        "privateSubnets": [
+          "subnet-68be310d",
+          "subnet-d30cb9a4"
+        ],
+        "svcssubnet": [
+          "subnet-6abe310f",
+          "subnet-d20cb9a5"
+        ],
+        "availabilityZones": [
+          "ap-southeast-2a",
+          "ap-southeast-2b"
+        ],
+        "keyNamePrefix": "resi-data",
+        "hostedZoneName": "residata-dev.realestate.com.au.",
+        "email": "resi-data-dev@rea-group.com"
+      },
+      "prod": {
+        "prod": {
+          "vpc": "",
+          "privateSubnets": [
+            "",
+            ""
+          ],
+          "svcssubnet": [
+            "",
+            ""
+          ],
+          "availabilityZones": [
+            "",
+            ""
+          ],
+          "keyNamePrefix": "residata",
+          "hostedZoneName": "residata.realestate.com.au.",
+          "email": "resi-data-prod@rea-group.com"
+        }
+      }
+    }
+  },
+  "Resources":{
+    "SplunkforwarderSecurityGroup":{
+      "Type":"AWS::EC2::SecurityGroup",
+      "Properties":{
+        "GroupDescription":"Security group for Splunkforwarder",
+        "VpcId":{
+          "Fn::FindInMap":[
+            "VpcMap",
+            {
+              "Ref":"environment"
+            },
+            "vpc"
+          ]
+        },
+        "SecurityGroupIngress":[
+          {
+            "CidrIp":"0.0.0.0/0",
+            "IpProtocol":"icmp",
+            "FromPort":"-1",
+            "ToPort":"-1"
+          },
+          {
+            "IpProtocol":"tcp",
+            "FromPort":"22",
+            "ToPort":"22",
+            "CidrIp":"0.0.0.0/0"
+          },
+          {
+            "IpProtocol":"tcp",
+            "FromPort":"8000",
+            "ToPort":"8000",
+            "CidrIp":"0.0.0.0/0"
+          },
+          {
+            "IpProtocol":"tcp",
+            "FromPort":"9997",
+            "ToPort":"9997",
+            "CidrIp":"0.0.0.0/0"
+          }
+        ]
+      }
+    },
+    "ELBSecurityGroup":{
+      "Type":"AWS::EC2::SecurityGroup",
+      "Properties":{
+        "GroupDescription":"Security group for ELB",
+        "VpcId":{
+          "Fn::FindInMap":[
+            "VpcMap",
+            {
+              "Ref":"environment"
+            },
+            "vpc"
+          ]
+        },
+        "SecurityGroupIngress":[
+          {
+            "CidrIp":"0.0.0.0/0",
+            "IpProtocol":"icmp",
+            "FromPort":"-1",
+            "ToPort":"-1"
+          },
+          {
+            "IpProtocol": "tcp",
+            "FromPort": "9997",
+            "ToPort": "9997",
+            "CidrIp":"0.0.0.0/0"
+          }
+        ]
+      }
+    },
+    "SplunkRole":{
+      "Type":"AWS::IAM::Role",
+      "Properties":{
+        "AssumeRolePolicyDocument":{
+          "Statement":[
+            {
+              "Effect":"Allow",
+              "Principal":{
+                "Service":[
+                  "ec2.amazonaws.com"
+                ]
+              },
+              "Action":[
+                "sts:AssumeRole"
+              ]
+            }
+          ]
+        },
+        "Path":"/",
+        "Policies":[
+          {
+            "PolicyName":"cfn-example-policy",
+            "PolicyDocument":{
+              "Statement":[
+                {
+                  "Effect":"Allow",
+                  "Action":[
+                    "cloudformation:DescribeStackResource",
+                    "ec2:CreateSnapshot",
+                    "ec2:DescribeSnapshots"
+                  ],
+                  "Resource":"*"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "SplunkProfile":{
+      "Type":"AWS::IAM::InstanceProfile",
+      "Properties":{
+        "Path":"/",
+        "Roles":[
+          {
+            "Ref":"SplunkRole"
+          }
+        ]
+      }
+    },
+    "SplunkELB":{
+      "Type":"AWS::ElasticLoadBalancing::LoadBalancer",
+      "Properties":{
+        "CrossZone": true,
+        "Subnets":[
+          {
+            "Fn::FindInMap":[
+              "VpcMap",
+              {
+                "Ref":"environment"
+              },
+              "svcssubnet"
+            ]
+          }
+        ],
+        "Scheme":"internal",
+        "HealthCheck":{
+          "Target":"HTTPS:8000/en-US/account/login",
+          "Interval":"30",
+          "HealthyThreshold":"2",
+          "Timeout":"15",
+          "UnhealthyThreshold":"3"
+        },
+        "Listeners": [
+          {
+            "LoadBalancerPort": "9997",
+            "InstancePort": "9997",
+            "Protocol": "TCP"
+          }
+        ],
+        "SecurityGroups":[
+          {
+            "Ref":"ELBSecurityGroup"
+          }
+        ]
+      }
+    },
+    "SplunkForwarderAutoScalingGroup": {
+      "Type": "AWS::AutoScaling::AutoScalingGroup",
+      "Properties": {
+        "AvailabilityZones": {
+          "Fn::FindInMap": [
+            "VpcMap",
+            {
+              "Ref": "environment"
+            },
+            "availabilityZones"
+          ]
+        },
+        "HealthCheckType": "EC2",
+        "HealthCheckGracePeriod": "300",
+        "TerminationPolicies": ["OldestInstance"],
+        "LaunchConfigurationName": {
+          "Ref": "SplunkForwarderLaunchConfiguration"
+        },
+        "LoadBalancerNames": [
+          {
+            "Ref": "SplunkELB"
+          }
+        ],
+        "MinSize": "1",
+        "DesiredCapacity": "1",
+        "MaxSize": "1",
+        "VPCZoneIdentifier": {
+          "Fn::FindInMap": [
+            "VpcMap",
+            {
+              "Ref": "environment"
+            },
+            "privateSubnets"
+          ]
+        },
+        "Tags": [
+          {
+            "Key": "CloudFormationStack",
+            "Value": {
+              "Ref": "AWS::StackName"
+            },
+            "PropagateAtLaunch": true
+          },
+          {
+            "Key": "lob",
+            "Value": "Resi",
+            "PropagateAtLaunch": true
+          },
+          {
+            "Key": "node_name",
+            "Value": {
+              "Ref": "name"
+            },
+            "PropagateAtLaunch": true
+          },
+          {
+            "Key": "Name",
+            "Value": {
+            "Ref": "name"
+            },
+            "PropagateAtLaunch": true
+          }
+        ]
+      }
+    },
+    "SplunkForwarderLaunchConfiguration": {
+      "Type": "AWS::AutoScaling::LaunchConfiguration",
+      "Metadata": {
+        "AWS::CloudFormation::Init": {
+          "config": {
+            "files": {
+              "/etc/ntp.conf": {
+                "mode": "0644",
+                "owner": "root",
+                "group": "root",
+                "content": {
+                  "Fn::Join": [
+                    " \n",
+                    [
+                      "server 0.amazon.pool.ntp.org iburst",
+                      "server 1.amazon.pool.ntp.org iburst",
+                      "server 2.amazon.pool.ntp.org iburst",
+                      "server 3.amazon.pool.ntp.org iburst"
+                    ]
+                  ]
+                }
+              },
+              "/opt/splunkforwarder/etc/system/local/inputs.conf": {
+                "mode": "0644",
+                "owner": "splunk",
+                "group": "splunk",
+                "content": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "[splunktcp:9997]\n",
+                      "\n",
+                      "_meta = Environment::",
+                      {"Ref": "environment"}
+                    ]
+                  ]
+                }
+              },
+              "/opt/splunkforwarder/etc/system/local/outputs.conf": {
+                "mode": "0644",
+                "owner": "splunk",
+                "group": "splunk",
+                "content": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "[tcpout]\n",
+                      "defaultGroup = splunkssl\n",
+                      "\n",
+                      "[tcpout-server://",
+                      {"Ref": "splunkServerHost"},
+                      ":9996]\n",
+                      "\n",
+                      "[tcpout:splunkssl]\n",
+                      "server = ",
+                      {"Ref": "splunkServerHost"},
+                      ":9996\n",
+                      "sslCertPath = $SPLUNK_HOME/etc/certs/server.pem\n",
+                      "sslRootCAPath = $SPLUNK_HOME/etc/certs/cacert.pem\n",
+                      "sslVerifyServerCert = true\n"
+                    ]
+                  ]
+                }
+              },
+              "/opt/splunkforwarder/etc/system/local/server.conf": {
+                "mode": "0644",
+                "owner": "splunk",
+                "group": "splunk",
+                "content": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "[general]\n",
+                      "serverName = $HOSTNAME\n",
+                      "\n",
+                      "[lmpool:auto_generated_pool_forwarder]\n",
+                      "description = auto_generated_pool_forwarder\n",
+                      "quota = MAX\n",
+                      "slaves = *\n",
+                      "stack_id = forwarder\n",
+                      "\n",
+                      "[lmpool:auto_generated_pool_free]\n",
+                      "description = auto_generated_pool_free\n",
+                      "quota = MAX\n",
+                      "slaves = *\n",
+                      "stack_id = free\n",
+                      "\n",
+                      "[sslConfig]\n",
+                      "caPath = /opt/splunkforwarder/etc/certs\n"
+                    ]
+                  ]
+                }
+              },
+              "/opt/splunkforwarder/etc/certs/server.pem": {
+                "mode": "0400",
+                "owner": "splunk",
+                "group": "splunk",
+                "content": {
+                  "Fn::Join": [
+                    "\n",
+                    [
+                      {"Ref": "splunkforwarderClientCert"},
+                      {"Ref": "caCertificateChain"}
+                    ]
+                  ]
+                }
+              },
+              "/opt/splunkforwarder/etc/certs/cacert.pem": {
+                "mode": "0400",
+                "owner": "splunk",
+                "group": "splunk",
+                "content": {"Ref": "resiCaCert"}
+              }
+            },
+            "commands": {
+              "a_restart_splunk": {
+                "command": "/opt/splunkforwarder/bin/splunk restart",
+                "ignoreErrors": "true"
+              }
+            }
+          }
+        }
+      },
+      "Properties": {
+        "AssociatePublicIpAddress": true,
+        "ImageId": {
+          "Ref": "ami"
+        },
+        "InstanceType": {
+          "Ref": "instanceType"
+        },
+        "KeyName": {
+          "Fn::Join": [
+            "-",
+            [
+              {
+                "Fn::FindInMap": [
+                  "VpcMap",
+                  {
+                    "Ref": "environment"
+                  },
+                  "keyNamePrefix"
+                ]
+              },
+              "ap-southeast-2"
+            ]
+          ]
+        },
+        "SecurityGroups": [
+          {
+            "Ref": "SplunkforwarderSecurityGroup"
+          }
+        ],
+        "UserData": {
+          "Fn::Base64": {
+            "Fn::Join": [
+              "",
+              [
+                "#!/bin/bash -e\n",
+                "\n",
+                "/opt/aws/bin/cfn-init -s ",
+                {"Ref": "AWS::StackId"},
+                " -r SplunkForwarderLaunchConfiguration ",
+                " --region ",
+                {"Ref": "AWS::Region"},
+                "\n"
+              ]
+            ]
+          }
+        }
+      }
+    },
+    "splunkForwarderCNAME": {
+      "Type": "AWS::Route53::RecordSet",
+      "Properties": {
+        "HostedZoneName": {
+          "Fn::FindInMap": [
+            "VpcMap",
+            {
+              "Ref": "environment"
+            },
+            "hostedZoneName"
+          ]
+        },
+        "Comment":"DNS name for Splunkforwarder.",
+        "Name": {
+          "Fn::Join": [
+            ".",
+            [
+              "splunkforwarder",
+              {
+                "Fn::FindInMap": [
+                  "VpcMap",
+                  {
+                    "Ref": "environment"
+                  },
+                  "hostedZoneName"
+                ]
+              }
+            ]
+          ]
+        },
+        "Type": "CNAME",
+        "TTL": 300,
+        "ResourceRecords": [
+          {
+            "Fn::GetAtt": [
+              "SplunkELB",
+              "DNSName"
+            ]
+          }
+        ]
+      }
+    }
+  },
+    "Outputs": {
+      "elbCNAME": {
+        "Value": {
+          "Ref": "splunkForwarderCNAME"
+        }
+      }
+    }
+  }
