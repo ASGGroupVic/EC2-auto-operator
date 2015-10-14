@@ -75,7 +75,7 @@
           "ap-southeast-2b"
         ],
         "keyNamePrefix": "resi-data",
-        "hostedZoneName": "residata-dev.realestate.com.au.",
+        "hostedZoneName": "resi-data-dev.realestate.com.au.",
         "email": "resi-data-dev@rea-group.com"
       },
       "prod": {
@@ -87,7 +87,7 @@
         "availabilityZones": [
         ],
         "keyNamePrefix": "residata",
-        "hostedZoneName": "residata.realestate.com.au.",
+        "hostedZoneName": "resi-data-prod.realestate.com.au.",
         "email": "resi-data-prod@rea-group.com"
       }
     }
