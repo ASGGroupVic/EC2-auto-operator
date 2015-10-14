@@ -215,17 +215,16 @@
       "Type":"AWS::ElasticLoadBalancing::LoadBalancer",
       "Properties":{
         "CrossZone": true,
-        "Subnets":[
-          {
-            "Fn::FindInMap":[
-              "VpcMap",
-              {
-                "Ref":"environment"
-              },
-              "svcssubnet"
-            ]
-          }
-        ],
+        "Subnets":
+        {
+          "Fn::FindInMap": [
+            "VpcMap",
+            {
+              "Ref": "environment"
+            },
+            "svcssubnet"
+          ]
+        },
         "Scheme":"internal",
         "HealthCheck":{
           "Target":"HTTPS:8000/en-US/account/login",
