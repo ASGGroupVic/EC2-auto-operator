@@ -79,24 +79,16 @@
         "email": "resi-data-dev@rea-group.com"
       },
       "prod": {
-        "prod": {
-          "vpc": "",
-          "privateSubnets": [
-            "",
-            ""
-          ],
-          "svcssubnet": [
-            "",
-            ""
-          ],
-          "availabilityZones": [
-            "",
-            ""
-          ],
-          "keyNamePrefix": "residata",
-          "hostedZoneName": "residata.realestate.com.au.",
-          "email": "resi-data-prod@rea-group.com"
-        }
+        "vpc": "",
+        "privateSubnets": [
+        ],
+        "svcssubnet": [
+        ],
+        "availabilityZones": [
+        ],
+        "keyNamePrefix": "residata",
+        "hostedZoneName": "residata.realestate.com.au.",
+        "email": "resi-data-prod@rea-group.com"
       }
     }
   },
