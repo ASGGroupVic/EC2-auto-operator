@@ -87,7 +87,30 @@ Ensure [bucket names](residata-prod/parameters/create-bucket-params.json) are OK
 `rake residata_allEnv:create_sns_topics`
 
 ###Splunk Forwarder
-Before setup the Forwarder, create the index resi-data via the pull request from [GIA repository](https://git.realestate.com.au/infrastructure/splunk-deployment/blob/master/ansible/roles/indexer-master/files/idxcluster/resi/local/indexes.conf) 
+
+Before setup the Forwarder, create a index called resi-data via the pull request from [GIA repository](https://git.realestate.com.au/infrastructure/splunk-deployment/blob/master/ansible/roles/indexer-master/files/idxcluster/resi/local/indexes.conf)
+Then run the rake task to setup a splunk forwarder server pointing to Skynet splunk
+
+`rake residata_dev:create_dev_SplunkFw`
+
+    +------+-----+------------------------+             +-------------------------------------+
+    |  RESI-DATA                          |             | SKYNET                         |
+    |                                     |             |                                     |
+    |  +-------+                          |             |                                     |
+    |  |  WEB  +-----+      +-------------+             +-------------+      +-------------+  |
+    |  +-------+     |      |             |             |             |      |             |  |
+    |                |      |             |   SSL       |             |      |             |  |
+    |                | 9997 |   SPLUNK    |   9996      |  SPLUNK     | 9997 | splunk.     |  |
+    |  +-------+     |      |             |             |             |      | skynet.     |  |
+    |  |  API  +------------>  FORWARDER  +------------->  FORWARDER  +------> realestate. |  |
+    |  +-------+     |      |             |             |             |      | com.au      |  |
+    |                |      |             |             |             |      |             |  |
+    |  +-------+     |      |             |             |             |      |             |  |
+    |  | INDEX +-----+      +-------------+             +-------------+      +-------------+  |
+    |  +-------+                          |             |                                     |
+    |                                     |             |                                     |
+    +-------------------------------------+             +-------------------------------------+
+
 ##ToDo List
 
 - Document some verification steps to test whether the environment is working correctly.
