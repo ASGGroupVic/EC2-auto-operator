@@ -318,7 +318,7 @@
       "Properties": {
         "AssociatePublicIpAddress": true,
         "IamInstanceProfile": {
-          "Ref": "Profile"
+          "Ref": "SplunkProfile"
         },
         "ImageId": {
           "Ref": "ami"
