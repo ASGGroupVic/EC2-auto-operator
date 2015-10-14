@@ -94,7 +94,7 @@ Then run the rake task to setup a splunk forwarder server pointing to Skynet spl
 `rake residata_dev:create_dev_SplunkFw`
 
     +------+-----+------------------------+             +-------------------------------------+
-    |  RESI-DATA                          |             | SKYNET                         |
+    |  RESI-DATA                          |             | SKYNET                              |
     |                                     |             |                                     |
     |  +-------+                          |             |                                     |
     |  |  WEB  +-----+      +-------------+             +-------------+      +-------------+  |
