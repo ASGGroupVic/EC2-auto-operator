@@ -38,7 +38,7 @@
     "name": {
       "Description": "The name of this stack",
       "Type": "String",
-      "Default": "resi-data-splunkforwarder"
+      "Default": "splunkfw-rd"
     },
     "splunkServerHost": {
       "Description": "The url of the splunk server we wish to forward to",
@@ -504,7 +504,7 @@
           "Fn::Join": [
             ".",
             [
-              "splunkforwarder",
+              "splunkfw-rd",
               {
                 "Fn::FindInMap": [
                   "VpcMap",
