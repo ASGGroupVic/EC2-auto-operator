@@ -175,16 +175,14 @@
                   "ec2.amazonaws.com"
                 ]
               },
-              "Action":[
-                "sts:AssumeRole"
-              ]
-            }
-          ]
-        },
+              "Action": "sts:AssumeRole"
+              }
+            ]
+          },
         "Path":"/",
         "Policies":[
           {
-            "PolicyName":"cfn-example-policy",
+            "PolicyName":"splunk-policy",
             "PolicyDocument":{
               "Statement":[
                 {
@@ -317,6 +315,57 @@
     },
     "SplunkForwarderLaunchConfiguration": {
       "Type": "AWS::AutoScaling::LaunchConfiguration",
+      "Properties": {
+        "AssociatePublicIpAddress": true,
+        "IamInstanceProfile": {
+          "Ref": "Profile"
+        },
+        "ImageId": {
+          "Ref": "ami"
+        },
+        "InstanceType": {
+          "Ref": "instanceType"
+        },
+        "KeyName": {
+          "Fn::Join": [
+            "-",
+            [
+              {
+                "Fn::FindInMap": [
+                  "VpcMap",
+                  {
+                    "Ref": "environment"
+                  },
+                  "keyNamePrefix"
+                ]
+              },
+              "ap-southeast-2"
+            ]
+          ]
+        },
+        "SecurityGroups": [
+          {
+            "Ref": "SplunkforwarderSecurityGroup"
+          }
+        ],
+        "UserData": {
+          "Fn::Base64": {
+            "Fn::Join": [
+              "",
+              [
+                "#!/bin/bash -e\n",
+                "\n",
+                "/opt/aws/bin/cfn-init -s ",
+                {"Ref": "AWS::StackId"},
+                " -r SplunkForwarderLaunchConfiguration ",
+                " --region ",
+                {"Ref": "AWS::Region"},
+                "\n"
+              ]
+            ]
+          }
+        }
+      },
       "Metadata": {
         "AWS::CloudFormation::Init": {
           "config": {
@@ -435,54 +484,6 @@
                 "ignoreErrors": "true"
               }
             }
-          }
-        }
-      },
-      "Properties": {
-        "AssociatePublicIpAddress": true,
-        "ImageId": {
-          "Ref": "ami"
-        },
-        "InstanceType": {
-          "Ref": "instanceType"
-        },
-        "KeyName": {
-          "Fn::Join": [
-            "-",
-            [
-              {
-                "Fn::FindInMap": [
-                  "VpcMap",
-                  {
-                    "Ref": "environment"
-                  },
-                  "keyNamePrefix"
-                ]
-              },
-              "ap-southeast-2"
-            ]
-          ]
-        },
-        "SecurityGroups": [
-          {
-            "Ref": "SplunkforwarderSecurityGroup"
-          }
-        ],
-        "UserData": {
-          "Fn::Base64": {
-            "Fn::Join": [
-              "",
-              [
-                "#!/bin/bash -e\n",
-                "\n",
-                "/opt/aws/bin/cfn-init -s ",
-                {"Ref": "AWS::StackId"},
-                " -r SplunkForwarderLaunchConfiguration ",
-                " --region ",
-                {"Ref": "AWS::Region"},
-                "\n"
-              ]
-            ]
           }
         }
       }
