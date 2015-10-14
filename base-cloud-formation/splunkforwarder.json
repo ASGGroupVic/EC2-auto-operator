@@ -14,7 +14,7 @@
     "ami":{
       "Description":"The AMI of the splunk you want to launch",
       "Type":"String",
-      "Default":"ami-2d0b7f17"
+      "Default":"ami-39551a03"
     },
     "size":{
       "Description":"The size of the EBS volume you want to create (in GB)",
