@@ -5,11 +5,15 @@
   },
   {
     "ParameterKey": "instanceType",
-    "ParameterValue": "t2.small"
+    "ParameterValue": "t2.medium"
   },
   {
     "ParameterKey": "ami",
     "ParameterValue": "ami-39551a03"
+  },
+  {
+    "ParameterKey": "size",
+    "ParameterValue": "100"
   },
   {
     "ParameterKey": "splunkforwarderClientCert",

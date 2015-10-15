@@ -1,7 +1,7 @@
 [
   {
     "ParameterKey": "ami",
-    "ParameterValue": "ami-39551a03"
+    "ParameterValue": "ami-9586ffaf"
   },
   {
     "ParameterKey": "splunkforwarderClientCert",
