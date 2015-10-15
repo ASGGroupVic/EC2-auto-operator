@@ -40,10 +40,24 @@
       "Type": "String",
       "Default": "splunkfw-rd"
     },
-    "splunkServerHost": {
-      "Description": "The url of the splunk server we wish to forward to",
+    "SplunkPort": {
+      "Description": "the port that splunk forwarder listens to",
+      "Type": "Number",
+      "Default": 9997
+    },
+    "SplunkIndex": {
+      "Description": "The index which Splunk itself logs as (not the messages it forwards)",
       "Type": "String",
-      "Default": "https://splunk.skynet.realestate.com.au"
+      "Default": "resi-data"
+    },
+    "SplunkIndexerHost": {
+      "Description": "the url of the splunk server we wish to forward to",
+      "Type": "String"
+    },
+    "SplunkIndexerPort": {
+      "Description": "the port of the splunk server we wish to forward to",
+      "Type": "Number",
+      "Default": 443
     },
     "splunkforwarderClientCert": {
       "Description": "Splunk forwarder client cert",
@@ -143,7 +157,7 @@
     "ELBSecurityGroup":{
       "Type":"AWS::EC2::SecurityGroup",
       "Properties":{
-        "GroupDescription":"Security group for ELB",
+        "GroupDescription":"Security group for Splunk Forwarder ELB",
         "VpcId":{
           "Fn::FindInMap":[
             "VpcMap",
@@ -155,16 +169,14 @@
         },
         "SecurityGroupIngress":[
           {
-            "CidrIp":"0.0.0.0/0",
-            "IpProtocol":"icmp",
-            "FromPort":"-1",
-            "ToPort":"-1"
-          },
-          {
+            "CidrIp": "0.0.0.0/0",
+            "FromPort": {
+              "Ref": "SplunkPort"
+            },
             "IpProtocol": "tcp",
-            "FromPort": "9997",
-            "ToPort": "9997",
-            "CidrIp":"0.0.0.0/0"
+            "ToPort": {
+              "Ref": "SplunkPort"
+            }
           }
         ]
       }
@@ -233,16 +245,31 @@
         },
         "Scheme":"internal",
         "HealthCheck":{
-          "Target":"HTTPS:8000/en-US/account/login",
-          "Interval":"30",
+          "Target": {
+            "Fn::Join": [
+              "",
+              [
+                "TCP:",
+                {
+                  "Ref": "SplunkPort"
+                }
+              ]
+            ]
+          },
+          "Interval":"15",
           "HealthyThreshold":"2",
-          "Timeout":"15",
-          "UnhealthyThreshold":"3"
+          "Timeout":"10",
+          "UnhealthyThreshold":"6"
         },
         "Listeners": [
           {
-            "LoadBalancerPort": "9997",
-            "InstancePort": "9997",
+            "InstancePort": {
+              "Ref": "SplunkPort"
+            },
+            "InstanceProtocol": "TCP",
+            "LoadBalancerPort": {
+              "Ref": "SplunkPort"
+            },
             "Protocol": "TCP"
           }
         ],
@@ -399,10 +426,37 @@
                   "Fn::Join": [
                     "",
                     [
-                      "[splunktcp:9997]\n",
+                      "index = ",
+                      {
+                        "Ref": "SplunkIndex"
+                      },
                       "\n",
-                      "_meta = Environment::",
-                      {"Ref": "environment"}
+                      "[monitor:///var/log/boot.log]\n",
+                      "ignoreOlderThan = 1d\n",
+                      "[monitor:///var/log/cfn-init.log]\n",
+                      "ignoreOlderThan = 1d\n",
+                      "[monitor:///var/log/cfn-init-cmd.log]\n",
+                      "ignoreOlderThan = 1d\n",
+                      "[monitor:///var/log/cron.log]\n",
+                      "ignoreOlderThan = 1d\n",
+                      "[monitor:///var/log/dmesg]\n",
+                      "ignoreOlderThan = 1d\n",
+                      "[monitor:///var/log/maillog]\n",
+                      "ignoreOlderThan = 1d\n",
+                      "[monitor:///var/log/messages]\n",
+                      "ignoreOlderThan = 1d\n",
+                      "[monitor:///var/log/secure]\n",
+                      "ignoreOlderThan = 1d\n",
+                      "[monitor:///var/log/yum.log]\n",
+                      "ignoreOlderThan = 1d\n",
+                      "[splunktcp:",
+                      {
+                        "Ref": "SplunkPort"
+                      },
+                      "]\n",
+                      "\n",
+                      "[SSL]\n",
+                      "requireClientCert = false\n"
                     ]
                   ]
                 }
@@ -415,20 +469,20 @@
                   "Fn::Join": [
                     "",
                     [
-                      "[tcpout]\n",
-                      "defaultGroup = splunkssl\n",
-                      "\n",
-                      "[tcpout-server://",
-                      {"Ref": "splunkServerHost"},
-                      ":9996]\n",
-                      "\n",
                       "[tcpout:splunkssl]\n",
                       "server = ",
-                      {"Ref": "splunkServerHost"},
-                      ":9996\n",
-                      "sslCertPath = $SPLUNK_HOME/etc/certs/server.pem\n",
-                      "sslRootCAPath = $SPLUNK_HOME/etc/certs/cacert.pem\n",
-                      "sslVerifyServerCert = true\n"
+                      {
+                        "Ref": "SplunkIndexerHost"
+                      },
+                      ":",
+                      {
+                        "Ref": "SplunkIndexerPort"
+                      },
+                      "\n",
+                      "compressed = true\n",
+                      "sslVerifyServerCert = true\n",
+                      "sslRootCAPath = /opt/splunk/etc/certs/cachain.pem\n",
+                      "sslCertPath = /opt/splunk/etc/certs/client-cert.pem\n"
                     ]
                   ]
                 }
