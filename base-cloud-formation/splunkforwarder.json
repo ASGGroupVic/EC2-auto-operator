@@ -1,6 +1,6 @@
 {
   "AWSTemplateFormatVersion":"2010-09-09",
-  "Description":"splunkforwarder",
+  "Description":"setup splunkforwarder instance",
   "Parameters":{
     "environment":{
       "Description":"The 'human' name of the environment you want to deploy to.",
@@ -12,7 +12,7 @@
       "Default":"dev"
     },
     "ami":{
-      "Description":"The AMI of the splunk you want to launch",
+      "Description":"The latest AMI Id of the GIA splunkforwarder",
       "Type":"String",
       "Default":"ami-39551a03"
     },
