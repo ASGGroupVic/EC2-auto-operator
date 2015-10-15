@@ -98,7 +98,7 @@ Then run the rake task to setup a splunk forwarder server pointing to Skynet spl
     |                                     |             |                                     |
     |  +-------+                          |             |                                     |
     |  |  WEB  +-----+      +-------------+             +-------------+      +-------------+  |
-    |  +-------+     |      |             |             |             |      |             |  |
+    |  +-------+     |      |splunkfw-rd  :|             |             |      |             |  |
     |                |      |             |   SSL       |             |      |             |  |
     |                | 9997 |   SPLUNK    |   9996      |  SPLUNK     | 9997 | splunk.     |  |
     |  +-------+     |      |             |             |             |      | skynet.     |  |
