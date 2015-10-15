@@ -102,8 +102,8 @@ Then run the rake task to setup a splunk forwarder server pointing to Skynet spl
     |                |      |             |   SSL       |             |      |             |  |
     |                | 9997 |   SPLUNK    |   9996      |  SPLUNK     | 9997 | splunk.     |  |
     |  +-------+     |      |             |             |             |      | skynet.     |  |
-    |  |  API  +------------>  FORWARDER  +------------->  FORWARDER  +------> realestate. |  |
-    |  +-------+     |      |             |             |             |      | com.au      |  |
+    |  |  API  +------------>  FORWARDER  +------------->  Indexer ELB+------> realestate. |  |
+    |  +-------+     |      |             |             |   :443      |      | com.au      |  |
     |                |      |             |             |             |      |             |  |
     |  +-------+     |      |             |             |             |      |             |  |
     |  | INDEX +-----+      +-------------+             +-------------+      +-------------+  |
