@@ -1,0 +1,1008 @@
+{
+   "AWSTemplateFormatVersion":"2010-09-09",
+   "Description":"splunk",
+   "Parameters":{
+      "SSLCertificateId":{
+         "Description":"The SSL certificate ID previously uploaded to AWS, to be used for the ELB",
+         "Type":"String"
+      },
+      "environment":{
+         "Description":"The 'human' name of the environment you want to deploy to.",
+         "Type":"String",
+         "AllowedValues":[
+            "is-dev",
+            "is-qa",
+            "is-prod"
+         ],
+         "Default":"is-dev"
+      },
+      "ami":{
+         "Description":"The AMI of the splunk you want to launch",
+         "Type":"String",
+         "Default":"ami-d3168ee9"
+      },
+      "size":{
+         "Description":"The size of the EBS volume you want to create (in GB)",
+         "Type":"Number",
+         "MinValue":"10",
+         "MaxValue":"200",
+         "Default":"20"
+      },
+      "instanceType":{
+         "Description":"The type of the EC2 instance you want",
+         "Type":"String",
+         "AllowedValues":[
+            "t2.micro",
+            "t2.small",
+            "t2.medium",
+            "m3.medium",
+            "m4.large"
+         ],
+         "Default":"t2.small"
+      },
+      "volumeId":{
+         "Description":"The ID of an existing splunk-data volume you want to attach.",
+         "Type":"String"
+      },
+      "smtpUsername":{
+         "NoEcho":"true",
+         "Description":"The SMTP username",
+         "Type":"String"
+      },
+      "smtpPassword":{
+         "NoEcho":"true",
+         "Description":"The SMTP password",
+         "Type":"String"
+      },
+      "splunkMasterPassKey":{
+         "NoEcho":"true",
+         "Description":"The pass key for splunk master (from rattic)",
+         "Type":"String"
+      }
+   },
+   "Mappings":{
+      "VpcMap":{
+         "is-dev":{
+            "vpc":"vpc-a87d64ca",
+            "subnet":"subnet-3f808d4b",
+            "svcssubnet":"subnet-176f7b63",
+            "availabilityzone":"ap-southeast-2a",
+            "hostedZoneSubdomain":"is-dev",
+            "keyName":"is-dev",
+            "fromEmailAddress":"itis-alerts-nonprod@realestate.com.au"
+         },
+         "is-qa":{
+            "vpc":"vpc-b4c223d1",
+            "subnet":"subnet-b24ebbd7",
+            "svcssubnet":"subnet-b04ebbd5",
+            "availabilityzone":"ap-southeast-2a",
+            "hostedZoneSubdomain":"is-qa",
+            "keyName":"is-qa",
+            "fromEmailAddress":"itis-alerts-nonprod@realestate.com.au"
+         },
+         "is-prod":{
+            "vpc":"vpc-7a7d6418",
+            "subnet":"subnet-5c818c28",
+            "svcssubnet":"subnet-26160252",
+            "availabilityzone":"ap-southeast-2a",
+            "hostedZoneSubdomain":"infosys",
+            "keyName":"rea-is-prod",
+            "fromEmailAddress":"itis-alerts@realestate.com.au"
+         }
+      }
+   },
+   "Resources":{
+      "SplunkSecurityGroup":{
+         "Type":"AWS::EC2::SecurityGroup",
+         "Properties":{
+            "GroupDescription":"Security group for Splunk",
+            "VpcId":{
+               "Fn::FindInMap":[
+                  "VpcMap",
+                  {
+                     "Ref":"environment"
+                  },
+                  "vpc"
+               ]
+            },
+            "SecurityGroupIngress":[
+               {
+                  "CidrIp":"0.0.0.0/0",
+                  "IpProtocol":"icmp",
+                  "FromPort":"-1",
+                  "ToPort":"-1"
+               },
+               {
+                  "IpProtocol":"tcp",
+                  "FromPort":"22",
+                  "ToPort":"22",
+                  "CidrIp":"0.0.0.0/0"
+               },
+               {
+                  "IpProtocol":"tcp",
+                  "FromPort":"8000",
+                  "ToPort":"8000",
+                  "CidrIp":"0.0.0.0/0"
+               },
+               {
+                  "IpProtocol":"tcp",
+                  "FromPort":"8089",
+                  "ToPort":"8089",
+                  "CidrIp":"0.0.0.0/0"
+               },
+               {
+                  "IpProtocol":"tcp",
+                  "FromPort":"9997",
+                  "ToPort":"9997",
+                  "CidrIp":"0.0.0.0/0"
+               }
+            ]
+         }
+      },
+      "ELBSecurityGroup":{
+         "Type":"AWS::EC2::SecurityGroup",
+         "Properties":{
+            "GroupDescription":"Security group for ELB",
+            "VpcId":{
+               "Fn::FindInMap":[
+                  "VpcMap",
+                  {
+                     "Ref":"environment"
+                  },
+                  "vpc"
+               ]
+            },
+            "SecurityGroupIngress":[
+               {
+                  "CidrIp":"0.0.0.0/0",
+                  "IpProtocol":"icmp",
+                  "FromPort":"-1",
+                  "ToPort":"-1"
+               },
+               {
+                  "IpProtocol":"tcp",
+                  "FromPort":"443",
+                  "ToPort":"443",
+                  "CidrIp":"0.0.0.0/0"
+               }
+            ]
+         }
+      },
+      "SplunkRole":{
+         "Type":"AWS::IAM::Role",
+         "Properties":{
+            "AssumeRolePolicyDocument":{
+               "Statement":[
+                  {
+                     "Effect":"Allow",
+                     "Principal":{
+                        "Service":[
+                           "ec2.amazonaws.com"
+                        ]
+                     },
+                     "Action":[
+                        "sts:AssumeRole"
+                     ]
+                  }
+               ]
+            },
+            "Path":"/",
+            "Policies":[
+               {
+                  "PolicyName":"cfn-example-policy",
+                  "PolicyDocument":{
+                     "Statement":[
+                        {
+                           "Effect":"Allow",
+                           "Action":[
+                              "cloudformation:DescribeStackResource",
+                              "ec2:CreateSnapshot",
+                              "ec2:DescribeSnapshots"
+                           ],
+                           "Resource":"*"
+                        }
+                     ]
+                  }
+               }
+            ]
+         }
+      },
+      "SplunkProfile":{
+         "Type":"AWS::IAM::InstanceProfile",
+         "Properties":{
+            "Path":"/",
+            "Roles":[
+               {
+                  "Ref":"SplunkRole"
+               }
+            ]
+         }
+      },
+      "SplunkELB":{
+         "Type":"AWS::ElasticLoadBalancing::LoadBalancer",
+         "Properties":{
+            "Subnets":[
+               {
+                  "Fn::FindInMap":[
+                     "VpcMap",
+                     {
+                        "Ref":"environment"
+                     },
+                     "svcssubnet"
+                  ]
+               }
+            ],
+            "Scheme":"internal",
+            "HealthCheck":{
+               "Target":"HTTPS:8000/en-US/account/login",
+               "Interval":"30",
+               "HealthyThreshold":"2",
+               "Timeout":"15",
+               "UnhealthyThreshold":"3"
+            },
+            "Instances":[
+               {
+                  "Ref":"SplunkInstance"
+               }
+            ],
+            "Listeners":[
+               {
+                  "LoadBalancerPort":"443",
+                  "InstancePort":"8000",
+                  "InstanceProtocol":"HTTPS",
+                  "Protocol":"HTTPS",
+                  "SSLCertificateId":{
+                     "Ref":"SSLCertificateId"
+                  }
+               }
+            ],
+            "SecurityGroups":[
+               {
+                  "Ref":"ELBSecurityGroup"
+               }
+            ]
+         }
+      },
+      "SplunkInstance":{
+         "Type":"AWS::EC2::Instance",
+         "Properties":{
+            "IamInstanceProfile":{
+               "Ref":"SplunkProfile"
+            },
+            "SubnetId":{
+               "Fn::FindInMap":[
+                  "VpcMap",
+                  {
+                     "Ref":"environment"
+                  },
+                  "subnet"
+               ]
+            },
+            "SecurityGroupIds":[
+               {
+                  "Ref":"SplunkSecurityGroup"
+               }
+            ],
+            "ImageId":{
+               "Ref":"ami"
+            },
+            "InstanceType":{
+               "Ref":"instanceType"
+            },
+            "Volumes":[
+               {
+                  "VolumeId":{
+                     "Ref":"volumeId"
+                  },
+                  "Device":"/dev/xvdb"
+               }
+            ],
+            "KeyName":{
+               "Fn::Join":[
+                  "-",
+                  [
+                     {
+                        "Fn::FindInMap":[
+                           "VpcMap",
+                           {
+                              "Ref":"environment"
+                           },
+                           "keyName"
+                        ]
+                     },
+                     "ap-southeast-2"
+                  ]
+               ]
+            },
+            "Monitoring":"false",
+            "Tags":[
+               {
+                  "Key":"contact",
+                  "Value":"gpde@rea-group.com"
+               },
+               {
+                  "Key":"application",
+                  "Value":"splunk"
+               },
+               {
+                  "Key":"lob",
+                  "Value":"Group Platform"
+               },
+               {
+                  "Key":"node_name",
+                  "Value":"splunk-rw"
+               },
+               {
+                  "Key":"Name",
+                  "Value":"information-systems/splunk-rw"
+               },
+               {
+                  "Key":"environment",
+                  "Value":{
+                     "Ref":"environment"
+                  }
+               }
+            ],
+            "UserData":{
+               "Fn::Base64":{
+                  "Fn::Join":[
+                     "",
+                     [
+                        "#!/bin/bash -e\n",
+                        "\n",
+                        "function error_exit\n",
+                        "{\n",
+                        "  /opt/aws/bin/cfn-signal -e 0 -r \"$1\" '",
+                        {
+                           "Ref":"WaitHandle"
+                        },
+                        "'\n",
+                        "  exit 1\n",
+                        "}\n",
+                        "/opt/aws/bin/cfn-init -s ",
+                        {
+                           "Ref":"AWS::StackId"
+                        },
+                        " -r SplunkInstance ",
+                        " --region ",
+                        {
+                           "Ref":"AWS::Region"
+                        },
+                        " || error_exit 'Failed to run cfn-init'\n",
+                        "\n",
+                        "if [ -f /opt/splunk/var/lib/splunk/rea_splunk_backup.tar.bz2 ]; then\n",
+                        "  tar -C / -xjvf /opt/splunk/var/lib/splunk/rea_splunk_backup.tar.bz2 > /tmp/rea_splunk_recover.log\n",
+                        "  service splunk restart\n",
+                        "fi\n",
+                        "\n",
+                        "/opt/aws/bin/cfn-signal -e 0 '",
+                        {
+                           "Ref":"WaitHandle"
+                        },
+                        "'\n",
+                        "\n"
+                     ]
+                  ]
+               }
+            }
+         },
+         "Metadata":{
+            "AWS::CloudFormation::Init":{
+               "config":{
+                  "packages":{
+                     "yum":{
+                        "postfix":[
+
+                        ],
+                        "cyrus-sasl-plain":[
+
+                        ],
+                        "cyrus-sasl-md5":[
+
+                        ],
+                        "nsca-client":[
+
+                        ],
+                        "expect":[
+
+                        ]
+                     }
+                  },
+                  "files":{
+                     "/etc/cfn/cfn-hup.conf":{
+                        "content":{
+                           "Fn::Join":[
+                              "",
+                              [
+                                 "[main]\n",
+                                 "stack=",
+                                 {
+                                    "Ref":"AWS::StackName"
+                                 },
+                                 "\n",
+                                 "region=",
+                                 {
+                                    "Ref":"AWS::Region"
+                                 },
+                                 "\n",
+                                 "interval=5\n",
+                                 "\n"
+                              ]
+                           ]
+                        },
+                        "mode":"000400",
+                        "owner":"root",
+                        "group":"root"
+                     },
+                     "/etc/cfn/hooks.d/cfn-auto-reloader.conf":{
+                        "content":{
+                           "Fn::Join":[
+                              "",
+                              [
+                                 "[cfn-auto-reloader-hook]\n",
+                                 "triggers=post.update\n",
+                                 "path=Resources.SplunkInstance.Metadata.AWS::CloudFormation::Init\n",
+                                 "action=/opt/aws/bin/cfn-init -s ",
+                                 {
+                                    "Ref":"AWS::StackName"
+                                 },
+                                 " -r SplunkInstance",
+                                 " --region ",
+                                 {
+                                    "Ref":"AWS::Region"
+                                 },
+                                 "\n",
+                                 "runas=root\n",
+                                 "\n"
+                              ]
+                           ]
+                        }
+                     },
+                     "/opt/splunk/etc/.ui_login":{
+                        "content":" ",
+                        "mode":"000444",
+                        "owner":"splunk",
+                        "group":"splunk"
+                     },
+                     "/etc/cron.d/snapshot_splunk_data":{
+                        "content":{
+                           "Fn::Join":[
+                              "\n",
+                              [
+                                 "# Snapshot splunk at midnight every day",
+                                 "0 0 * * * root /usr/local/bin/snapshot_splunk > /dev/null",
+                                 ""
+                              ]
+                           ]
+                        },
+                        "mode":"000444",
+                        "owner":"root",
+                        "group":"root"
+                     },
+                     "/usr/local/bin/change_default_password":{
+                        "content":{
+                           "Fn::Join":[
+                              "\n",
+                              [
+                                 "#!/usr/bin/expect -f",
+                                 "",
+                                 "set old_password [lindex $argv 0]",
+                                 "set new_password [lindex $argv 1]",
+                                 "",
+                                 "spawn /opt/splunk/bin/splunk edit user admin -password $new_password -auth admin:$old_password",
+                                 "expect \"Please enter a new password:\"",
+                                 "send \"$new_password\"",
+                                 "send \"\n\"",
+                                 "expect \"Please confirm new password:\"",
+                                 "send \"$new_password\"",
+                                 "send \"\n\"",
+                                 "expect \"User admin edited.\"",
+                                 "wait",
+                                 ""
+                              ]
+                           ]
+                        },
+                        "mode":"000500",
+                        "owner":"root",
+                        "group":"root"
+                     },
+                     "/usr/local/bin/backup_splunk_data":{
+                        "content":{
+                           "Fn::Join":[
+                              "\n",
+                              [
+                                 "#!/bin/bash",
+                                 "set -e",
+                                 "tar jvcf /opt/splunk/var/lib/splunk/rea_splunk_backup.tar.bz2 /opt/splunk/etc/apps/*/local /opt/splunk/etc/users",
+                                 "exit 0",
+                                 ""
+                              ]
+                           ]
+                        },
+                        "mode":"000500",
+                        "owner":"root",
+                        "group":"root"
+                     },
+                     "/usr/local/bin/snapshot_splunk":{
+                        "content":{
+                           "Fn::Join":[
+                              "",
+                              [
+                                 "#!/bin/bash\n",
+                                 "set -e\n",
+                                 "\n",
+                                 "export AWS_DEFAULT_REGION=",
+                                 {
+                                    "Ref":"AWS::Region"
+                                 },
+                                 "\n",
+                                 "/sbin/service splunk stop\n",
+                                 "/usr/local/bin/backup_splunk_data\n",
+                                 "grep -q /dev/xvdb /proc/mounts && umount /dev/xvdb\n",
+                                 "\n",
+                                 "aws ec2 create-snapshot --volume-id ",
+                                 {
+                                    "Ref":"volumeId"
+                                 },
+                                 " --description 'splunk-data backup'\n",
+                                 "\n",
+                                 "mount /dev/xvdb\n",
+                                 "/sbin/service splunk start\n",
+                                 "\n",
+                                 "exit 0\n",
+                                 "\n"
+                              ]
+                           ]
+                        },
+                        "mode":"000500",
+                        "owner":"root",
+                        "group":"root"
+                     },
+                     "/etc/init.d/rea-splunk-backup":{
+                        "content":{
+                           "Fn::Join":[
+                              "\n",
+                              [
+                                 "#!/bin/sh",
+                                 "#",
+                                 "# chkconfig:   2345 99 0",
+                                 "# description: Backs up the rea splunk data",
+                                 "",
+                                 "start() {",
+                                 "  touch /var/lock/subsys/rea-splunk-backup",
+                                 "}",
+                                 "",
+                                 "stop() {",
+                                 "  /usr/local/bin/backup_splunk_data > /opt/splunk/var/lib/splunk/rea_splunk_backup.log",
+                                 "  sync",
+                                 "}",
+                                 "",
+                                 "case \"$1\" in",
+                                 "    start)",
+                                 "        $1",
+                                 "        ;;",
+                                 "    stop)",
+                                 "        $1",
+                                 "        ;;",
+                                 "    *)",
+                                 "        echo $\"Usage: $0 {start|stop}\"",
+                                 "        exit 2",
+                                 "esac",
+                                 "",
+                                 "exit $?",
+                                 ""
+                              ]
+                           ]
+                        },
+                        "mode":"000555",
+                        "owner":"root",
+                        "group":"root"
+                     },
+                     "/opt/splunk/etc/system/local/web.conf":{
+                        "content":{
+                           "Fn::Join":[
+                              "\n",
+                              [
+                                 "[settings]",
+                                 "enableSplunkWebSSL = true",
+                                 "ui_inactivity_timeout = 0",
+                                 ""
+                              ]
+                           ]
+                        },
+                        "mode":"000444",
+                        "owner":"splunk",
+                        "group":"splunk"
+                     },
+                     "/opt/splunk/etc/system/local/alert_actions.conf":{
+                        "content":{
+                           "Fn::Join":[
+                              "",
+                              [
+                                 "[email]\n",
+                                 "from = ",
+                                 {
+                                    "Fn::FindInMap":[
+                                       "VpcMap",
+                                       {
+                                          "Ref":"environment"
+                                       },
+                                       "fromEmailAddress"
+                                    ]
+                                 },
+                                 "\n",
+                                 "mailserver = localhost\n",
+                                 "\n"
+                              ]
+                           ]
+                        }
+                     },
+                     "/opt/splunk/etc/system/local/authentication.conf":{
+                        "content":{
+                           "Fn::Join":[
+                              "\n",
+                              [
+                                 "[default]",
+                                 "[authentication]",
+                                 "authType = LDAP",
+                                 "authSettings = REA default",
+                                 "[REA default]",
+                                 "SSLEnabled = 1",
+                                 "anonymous_referrals = 1",
+                                 "charset = utf8",
+                                 "groupBaseDN = ou=groups,dc=realestate,dc=com,dc=au",
+                                 "groupBaseFilter = (objectClass=groupOfUniqueNames)",
+                                 "groupMappingAttribute = dn",
+                                 "groupMemberAttribute = uniquemember",
+                                 "groupNameAttribute = cn",
+                                 "host = auth.near",
+                                 "nestedGroups = 0",
+                                 "network_timeout = -1",
+                                 "port = 636",
+                                 "realNameAttribute = cn",
+                                 "sizelimit = 10000",
+                                 "timelimit = 29",
+                                 "userBaseDN = ou=people,dc=realestate,dc=com,dc=au",
+                                 "userBaseFilter = (!(employeeType=disabled))",
+                                 "userNameAttribute = uid",
+                                 "[roleMap_REA default]",
+                                 "user = Monitoring",
+                                 "power = Developers;Dev Ops;Monitoring;Ops Contractors;Site Operations;Studio Admins",
+                                 "admin = BIQ Admins;Information Systems Admin",
+                                 ""
+                              ]
+                           ]
+                        },
+                        "mode":"000444",
+                        "owner":"splunk",
+                        "group":"splunk"
+                     },
+                     "/etc/postfix/sasl_passwd":{
+                        "mode":"000444",
+                        "owner":"root",
+                        "group":"root",
+                        "content":{
+                           "Fn::Join":[
+                              "",
+                              [
+                                 "email-smtp.us-east-1.amazonaws.com:587 ",
+                                 {
+                                    "Ref":"smtpUsername"
+                                 },
+                                 ":",
+                                 {
+                                    "Ref":"smtpPassword"
+                                 },
+                                 "\n"
+                              ]
+                           ]
+                        }
+                     },
+                     "/etc/postfix/main.cf":{
+                        "mode":"000444",
+                        "owner":"root",
+                        "group":"root",
+                        "content":{
+                           "Fn::Join":[
+                              "\n",
+                              [
+                                 "# Global Postfix configuration file.",
+                                 "# This is updated for CentOS in REA, and heavily",
+                                 "# based on the default (distribution) config file",
+                                 "queue_directory = /var/spool/postfix",
+                                 "command_directory = /usr/sbin",
+                                 "daemon_directory = /usr/libexec/postfix",
+                                 "data_directory = /var/lib/postfix",
+                                 "html_directory = no",
+                                 "manpage_directory = /usr/share/man",
+                                 "readme_directory = /usr/share/doc/postfix-2.6.6/README_FILES",
+                                 "sendmail_path = /usr/sbin/sendmail.postfix",
+                                 "newaliases_path = /usr/bin/newaliases.postfix",
+                                 "mailq_path = /usr/bin/mailq.postfix",
+                                 "mail_owner = postfix",
+                                 "default_privs = nobody",
+                                 "setgid_group = postdrop",
+                                 "smtpd_banner = $myhostname ESMTP $mail_name",
+                                 "smtpd_tls_cert_file=/etc/pki/tls/certs/postfix-dummy.pem",
+                                 "smtpd_use_tls=yes",
+                                 "smtpd_tls_session_cache_database = btree:${data_directory}/smtpd_scache",
+                                 "smtp_tls_session_cache_database = btree:${data_directory}/smtp_scache",
+                                 "smtp_host_lookup = dns,native",
+                                 "relayhost = email-smtp.us-east-1.amazonaws.com:587",
+                                 "smtp_sasl_auth_enable = yes",
+                                 "smtp_sasl_security_options = noanonymous",
+                                 "smtp_sasl_password_maps = hash:/etc/postfix/sasl_passwd",
+                                 "smtp_use_tls = yes",
+                                 "smtp_tls_security_level = encrypt",
+                                 "smtp_tls_note_starttls_offer = yes",
+                                 "inet_interfaces = loopback-only",
+                                 "inet_protocols = all",
+                                 "unknown_local_recipient_reject_code = 550",
+                                 "relay_domains = rea-group.com, realestate.com.au, kp.realestate.com.au, eqx.realestate.com.au, vpc.realestate.com.au, int.realestate.com.au, dev.int.realestate.com.au, athome.de, athome.lu, athome.be, athome.fr, casa.it",
+                                 "smtp_tls_CAfile = /etc/ssl/certs/ca-bundle.crt",
+                                 ""
+                              ]
+                           ]
+                        }
+                     }
+                  },
+                  "commands":{
+                     "00_stop_splunk":{
+                        "test":"pgrep splunk",
+                        "command":"service splunk stop"
+                     },
+                     "00_timezone":{
+                        "command":"ln -sf /usr/share/zoneinfo/Australia/Melbourne /etc/localtime"
+                     },
+                     "00_hostname":{
+                        "command":{
+                           "Fn::Join":[
+                              "",
+                              [
+                                 "hostname splunk-rw.",
+                                 {
+                                    "Fn::FindInMap":[
+                                       "VpcMap",
+                                       {
+                                          "Ref":"environment"
+                                       },
+                                       "hostedZoneSubdomain"
+                                    ]
+                                 },
+                                 ".realestate.com.au && sed -i -e 's/\\(HOSTNAME[[:space:]]*=[[:space:]]*\\).*/\\1splunk-rw.",
+                                 {
+                                    "Fn::FindInMap":[
+                                       "VpcMap",
+                                       {
+                                          "Ref":"environment"
+                                       },
+                                       "hostedZoneSubdomain"
+                                    ]
+                                 },
+                                 ".realestate.com.au/' /etc/sysconfig/network"
+                              ]
+                           ]
+                        }
+                     },
+                     "00_rea_data_backup_rc_d":{
+                        "command":"chkconfig --add rea-splunk-backup"
+                     },
+                     "00_cfn_hup_rc_d":{
+                        "command":"chkconfig --add cfn-hup"
+                     },
+                     "00_splunk_volume_in_fstab":{
+                        "test":"test -z \"$(grep splunk /etc/fstab)\"",
+                        "command":"echo \"LABEL=splunk-data /opt/splunk/var ext4 defaults 0 1\" >> /etc/fstab"
+                     },
+                     "10_remove_sendmail":{
+                        "test":"test -n \"$(rpm -qa sendmail)\"",
+                        "command":"yum -y -q remove sendmail"
+                     },
+                     "10_create_splunk_fs":{
+                        "test":"test -z \"$(file -s /dev/xvdb | grep ext4)\"",
+                        "command":"mkfs.ext4 /dev/xvdb -L splunk-data -m 1 && mount /dev/xvdb /mnt && tar -cf - -C /opt/splunk/var/lib/splunk . | tar -xf - -C /mnt && umount /mnt"
+                     },
+                     "20_setup_postfix_sasl_passwd":{
+                        "command":"postmap hash:/etc/postfix/sasl_passwd"
+                     },
+                     "20_fsck_splunk_fs":{
+                        "command":"grep -q /dev/xvdb /proc/mounts && umount /dev/xvdb ; fsck -a /dev/xvdb"
+                     },
+                     "30_mount_splunk":{
+                        "test":"test -z \"$(grep /dev/xvdb /proc/mounts)\"",
+                        "command":"mount /opt/splunk/var"
+                     },
+                     "30_set_splunk_passkey":{
+                        "command":{
+                           "Fn::Join":[
+                              "",
+                              [
+                                 "sed -i -e 's/pass4SymmKey = .*/pass4SymmKey = ",
+                                 {
+                                    "Ref":"splunkMasterPassKey"
+                                 },
+                                 "/' /opt/splunk/etc/system/local/server.conf"
+                              ]
+                           ]
+                        }
+                     },
+                     "40_generate_splunk_password":{
+                        "test":"test ! -f /opt/splunk/var/lib/splunk/.password",
+                        "command":"dd if=/dev/random bs=1 count=20 2>/dev/null | base64 > /opt/splunk/var/lib/splunk/.password && chmod 0400 /opt/splunk/var/lib/splunk/.password"
+                     },
+                     "40_start_splunk":{
+                        "test":"test -z \"$(pgrep splunk)\"",
+                        "command":"service splunk start"
+                     },
+                     "50_change_splunk_password":{
+                        "test":"! /opt/splunk/bin/splunk list user -auth admin:$(cat /opt/splunk/var/lib/splunk/.password)",
+                        "command":"/usr/local/bin/change_default_password $(curl -s http://169.254.169.254/latest/meta-data/instance-id/) $(cat /opt/splunk/var/lib/splunk/.password)"
+                     },
+                     "60_set_splunk_servername":{
+                        "command":"/opt/splunk/bin/splunk set servername $(hostname) -auth admin:$(cat /opt/splunk/var/lib/splunk/.password)"
+                     },
+                     "60_set_splunk_default_hostname":{
+                        "command":"/opt/splunk/bin/splunk set default-hostname $(hostname) -auth admin:$(cat /opt/splunk/var/lib/splunk/.password)"
+                     },
+                     "60_setup_splunk_license":{
+                        "command":"/opt/splunk/bin/splunk edit licenser-localslave -master_uri https://splunk-license-master:8089 -auth admin:$(cat /opt/splunk/var/lib/splunk/.password)"
+                     },
+                     "60_enable_splunk_listen":{
+                        "test":"test -z \"$(/opt/splunk/bin/splunk display listen -auth admin:$(cat /opt/splunk/var/lib/splunk/.password) | grep 9997)\"",
+                        "command":"/opt/splunk/bin/splunk enable listen 9997 -auth admin:$(cat /opt/splunk/var/lib/splunk/.password)"
+                     },
+                     "60_add_icw_user":{
+                        "test":"test -z \"$(/opt/splunk/bin/splunk list user -auth admin:$(cat /opt/splunk/var/lib/splunk/.password) | grep username | grep svc_iw)\"",
+                        "command":"/opt/splunk/bin/splunk add user svc_iw -password D0ckers4glory -role user -auth admin:$(cat /opt/splunk/var/lib/splunk/.password)"
+                     },
+                     "60_splunk_disk_usage":{
+                        "command":"/opt/splunk/bin/splunk set minfreemb 2048 -auth admin:$(cat /opt/splunk/var/lib/splunk/.password)"
+                     },
+                     "90_recover_splunk_data":{
+                        "command":"/etc/init.d/rea-splunk-backup start"
+                     },
+                     "99_restart_postfix":{
+                        "command":"service postfix restart"
+                     },
+                     "99_restart_splunk":{
+                        "command":"service splunk restart"
+                     },
+                     "99_start_cfn_hup":{
+                        "command":"service cfn-hup start"
+                     }
+                  }
+               }
+            }
+         }
+      },
+      "WaitHandle":{
+         "Type":"AWS::CloudFormation::WaitConditionHandle",
+         "Properties":{
+
+         }
+      },
+      "WaitCondition":{
+         "Type":"AWS::CloudFormation::WaitCondition",
+         "DependsOn":[
+            "SplunkInstance"
+         ],
+         "Properties":{
+            "Handle":{
+               "Ref":"WaitHandle"
+            },
+            "Timeout":"600",
+            "Count":"1"
+         }
+      },
+      "SplunkDNSRecord":{
+         "Type":"AWS::Route53::RecordSet",
+         "Properties":{
+            "HostedZoneName":{
+               "Fn::Join":[
+                  ".",
+                  [
+                     {
+                        "Fn::FindInMap":[
+                           "VpcMap",
+                           {
+                              "Ref":"environment"
+                           },
+                           "hostedZoneSubdomain"
+                        ]
+                     },
+                     "realestate.com.au."
+                  ]
+               ]
+            },
+            "Comment":"DNS name for Splunk.",
+            "Name":{
+               "Fn::Join":[
+                  ".",
+                  [
+                     "splunk-rw",
+                     {
+                        "Fn::FindInMap":[
+                           "VpcMap",
+                           {
+                              "Ref":"environment"
+                           },
+                           "hostedZoneSubdomain"
+                        ]
+                     },
+                     "realestate.com.au."
+                  ]
+               ]
+            },
+            "Type":"A",
+            "TTL":"60",
+            "ResourceRecords":[
+               {
+                  "Fn::GetAtt":[
+                     "SplunkInstance",
+                     "PrivateIp"
+                  ]
+               }
+            ]
+         }
+      },
+      "SplunkCNAME":{
+         "Type":"AWS::Route53::RecordSet",
+         "Properties":{
+            "HostedZoneName":{
+               "Fn::Join":[
+                  ".",
+                  [
+                     {
+                        "Fn::FindInMap":[
+                           "VpcMap",
+                           {
+                              "Ref":"environment"
+                           },
+                           "hostedZoneSubdomain"
+                        ]
+                     },
+                     "realestate.com.au."
+                  ]
+               ]
+            },
+            "Comment":"DNS name for Splunk.",
+            "Name":{
+               "Fn::Join":[
+                  ".",
+                  [
+                     "splunk",
+                     {
+                        "Fn::FindInMap":[
+                           "VpcMap",
+                           {
+                              "Ref":"environment"
+                           },
+                           "hostedZoneSubdomain"
+                        ]
+                     },
+                     "realestate.com.au."
+                  ]
+               ]
+            },
+            "Type":"CNAME",
+            "TTL":"60",
+            "ResourceRecords":[
+               {
+                  "Fn::GetAtt":[
+                     "SplunkELB",
+                     "DNSName"
+                  ]
+               }
+            ]
+         }
+      }
+   },
+   "Outputs":{
+      "InstanceId":{
+         "Description":"InstanceId of the newly created EC2 instance",
+         "Value":{
+            "Ref":"SplunkInstance"
+         }
+      }
+   }
+}

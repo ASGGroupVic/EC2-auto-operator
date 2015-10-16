@@ -348,7 +348,7 @@
     "SplunkForwarderLaunchConfiguration": {
       "Type": "AWS::AutoScaling::LaunchConfiguration",
       "Properties": {
-        "AssociatePublicIpAddress": true,
+        "AssociatePublicIpAddress": false,
         "IamInstanceProfile": {
           "Ref": "SplunkProfile"
         },
@@ -481,8 +481,8 @@
                       "\n",
                       "compressed = true\n",
                       "sslVerifyServerCert = true\n",
-                      "sslRootCAPath = /opt/splunk/etc/certs/cachain.pem\n",
-                      "sslCertPath = /opt/splunk/etc/certs/client-cert.pem\n"
+                      "sslRootCAPath = /opt/splunk/etc/certs/cacert.pem\n",
+                      "sslCertPath = /opt/splunk/etc/certs/server.pem\n"
                     ]
                   ]
                 }
@@ -521,20 +521,26 @@
                 "owner": "splunk",
                 "group": "splunk",
                 "content": {
-                  "Fn::Join": [
-                    "\n",
-                    [
-                      {"Ref": "splunkforwarderClientCert"},
-                      {"Ref": "caCertificateChain"}
-                    ]
-                  ]
+                  "Ref": "splunkforwarderClientCert"
                 }
               },
               "/opt/splunkforwarder/etc/certs/cacert.pem": {
                 "mode": "0400",
                 "owner": "splunk",
                 "group": "splunk",
-                "content": {"Ref": "resiCaCert"}
+                "content": {
+                  "Fn::Join": [
+                    "\n",
+                    [
+                      {
+                        "Ref": "resiCaCert"
+                      },
+                      {
+                        "Ref": "caCertificateChain"
+                      }
+                    ]
+                  ]
+                }
               }
             },
             "commands": {
