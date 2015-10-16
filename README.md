@@ -113,6 +113,7 @@ Then run the rake task to setup a splunk forwarder server pointing to Skynet spl
 
 ##ToDo List
 
+- Refactor the code to pull all of parameter files out of this repo and place them into a private repo.
 - Document some verification steps to test whether the environment is working correctly.
 - Create Developer IAM role that can be associated with LDAP. Currently there is only Admin. We have a [starting point](base-cloud-formation/iam-role-policy.json) but need to understand permissions better.
 
