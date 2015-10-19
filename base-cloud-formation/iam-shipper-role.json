@@ -131,7 +131,8 @@
                     "route53:ListHealthChecks",
                     "route53:ListHostedZones",
                     "sdb:ListDomains",
-                    "sts:AssumeRole"
+                    "sts:AssumeRole",
+                    "SNS:CreateTopic"
                   ],
                   "Effect": "Allow",
                   "Resource": "*"
