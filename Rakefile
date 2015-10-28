@@ -50,6 +50,11 @@ namespace :residata_dev do
     update_stack('DEV-SecurityGroup', 'base-cloud-formation/security-group.json', 'residata-dev/parameters/rddev-securitygroup-params.json')
   end
 
+  desc "Add additional ACL to PublicSubnet in DEV"
+  task :additional_dev_ssh_ACL do
+    update_stack('DEV-additional-ACL', 'residata-dev/cloud-formation/additional-public-subnet-acl-rules.json', 'residata-dev/parameters/rddev-addpublicsubnet-acl-rules-params.json')
+  end
+
   desc "Create a DEV Splunkforwarder Server"
   task :create_dev_SplunkFw do
     update_stack('DEV-SplunkFw', 'base-cloud-formation/splunkforwarder.json', 'residata-dev/parameters/rddev-splunkforwarder-params.json')
