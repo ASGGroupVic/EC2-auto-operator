@@ -8,21 +8,31 @@ def update_stack(stack_name, template_file, settings_file = nil)
   end
 end
 
-namespace :residata_allEnv do
+namespace :residata_onceOff do
   desc "create sns event topics"
   task :create_sns_topics do
     update_stack('sns-topics', 'base-cloud-formation/sns-topics.json')
   end
- end
-namespace :residata_dev do
+
+  desc "create assume role for the app Residata-Extractor"
+  task :create_residata_extractor_role do
+    update_stack('residata-extractor-role', 'base-cloud-formation/residata-extractor-role.json')
+  end
+
   desc "Onceoff task-Create DNS records in route53 in ResiDataDEV account"
   task :Onceoff_create_dev_route53 do
     update_stack('DEV-dns-route53', 'base-cloud-formation/dns-route53-vpc.json', 'residata-dev/parameters/rddev-dns-route53-params.json')
   end
 
+  desc "Onceoff-Deploy route53 stack to Prod"
+  task :onceoff_create_prod_route53 do
+    update_stack('route53', 'residata-prod/cloud-formation/additional-route53-zone.json', 'residata-prod/parameters/dns-route53-params.json')
+  end
+ end
+namespace :residata_dev do
   desc "Create a deployment role in ResiDataDEV account"
   task :create_dev_shipperrole do
-    update_stack('DEV-iam-role', 'base-cloud-formation/iam-shipper-role.json','residata-dev/parameters/rddev-shipper-role-params.json')
+    update_stack('DEV-deployment-role', 'base-cloud-formation/iam-shipper-role.json','residata-dev/parameters/rddev-shipper-role-params.json')
   end
 
   desc "Create IAM Policy for federated role in DEV"
@@ -63,11 +73,6 @@ end
 
 
 namespace :residata_prod do
-
-  desc "Onceoff-Deploy route53 stack to Prod"
-  task :onceoff_create_prod_route53 do
-    update_stack('route53', 'residata-prod/cloud-formation/additional-route53-zone.json', 'residata-prod/parameters/dns-route53-params.json')
-    end
 
   desc "Create a deployment role to Prod"
   task :create_prod_shipperrole do

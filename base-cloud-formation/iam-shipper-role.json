@@ -8,7 +8,7 @@
     }
   },
   "Resources": {
-    "ShipperRole": {
+    "Shipper": {
       "Type": "AWS::IAM::Role",
       "Properties": {
         "Path": "/",
@@ -27,7 +27,7 @@
         },
         "Policies": [
           {
-            "PolicyName": "Shipper",
+            "PolicyName": "ShipperPolicy",
             "PolicyDocument": {
               "Version": "2012-10-17",
               "Statement": [
@@ -145,7 +145,7 @@
   "Outputs": {
     "RoleARN": {
       "Value": {
-        "Fn::GetAtt": [ "ShipperRole", "Arn" ]
+        "Fn::GetAtt": [ "Shipper", "Arn" ]
       }
     }
   }
