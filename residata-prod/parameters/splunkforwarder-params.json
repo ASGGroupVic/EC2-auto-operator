@@ -9,7 +9,7 @@
   },
   {
     "ParameterKey": "ami",
-    "ParameterValue": "ami-39551a03"
+    "ParameterValue": "ami-d1571feb"
   },
   {
     "ParameterKey": "size",

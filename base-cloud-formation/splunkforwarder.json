@@ -13,8 +13,7 @@
     },
     "ami":{
       "Description":"The latest AMI Id of the GIA splunkforwarder",
-      "Type":"String",
-      "Default":"ami-39551a03"
+      "Type":"String"
     },
     "size":{
       "Description":"The size of the EBS volume you want to create (in GB)",
@@ -292,7 +291,7 @@
             "availabilityZones"
           ]
         },
-        "HealthCheckType": "EC2",
+        "HealthCheckType": "ELB",
         "HealthCheckGracePeriod": "300",
         "TerminationPolicies": ["OldestInstance"],
         "LaunchConfigurationName": {

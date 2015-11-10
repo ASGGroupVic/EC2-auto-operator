@@ -82,11 +82,15 @@ Ensure [bucket names](residata-prod/parameters/create-bucket-params.json) are OK
 
 `rake residata_prod:create_prod_shipperrole`
 
-### IAM Role for residata applications
+### Assume Role for app residata-extractor
 
 The Money team created a [data services](https://git.realestate.com.au/the-money/residata-extractor) for us.
 The role ARN number should be given to them for the across account access.
-`rake residata_onceOff:create_residata_extractor_role`
+
+We download Omniture reports via [Omniture Reprot Handler](https://git.realestate.com.au/consumer-data/omniture-report-handler).
+To be able to access the s3 bucket owned by ConsumerData, the Parameter CD_AssumeRole should be provided by their team.
+
+`rake residata_prod:prod_residata_extractor_role `
 
 ###SNS Topics
 

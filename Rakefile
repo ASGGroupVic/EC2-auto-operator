@@ -8,28 +8,19 @@ def update_stack(stack_name, template_file, settings_file = nil)
   end
 end
 
-namespace :residata_onceOff do
+namespace :residata_allEnv do
   desc "create sns event topics"
   task :create_sns_topics do
     update_stack('sns-topics', 'base-cloud-formation/sns-topics.json')
   end
+end
 
-  desc "create assume role for the app Residata-Extractor"
-  task :create_residata_extractor_role do
-    update_stack('residata-extractor-role', 'base-cloud-formation/residata-extractor-role.json')
-  end
-
-  desc "Onceoff task-Create DNS records in route53 in ResiDataDEV account"
-  task :Onceoff_create_dev_route53 do
-    update_stack('DEV-dns-route53', 'base-cloud-formation/dns-route53-vpc.json', 'residata-dev/parameters/rddev-dns-route53-params.json')
-  end
-
-  desc "Onceoff-Deploy route53 stack to Prod"
-  task :onceoff_create_prod_route53 do
-    update_stack('route53', 'residata-prod/cloud-formation/additional-route53-zone.json', 'residata-prod/parameters/dns-route53-params.json')
-  end
- end
 namespace :residata_dev do
+  desc "Create assume role for Residata-Extractor in ResiDataDEV"
+  task :dev_residata_extractor_role do
+    update_stack('DEV-residata-extractor-role', 'base-cloud-formation/residata-extractor-role.json','residata-dev/parameters/rddev-residata-extractor-params.json')
+  end
+
   desc "Create a deployment role in ResiDataDEV account"
   task :create_dev_shipperrole do
     update_stack('DEV-deployment-role', 'base-cloud-formation/iam-shipper-role.json','residata-dev/parameters/rddev-shipper-role-params.json')
@@ -48,6 +39,11 @@ namespace :residata_dev do
   desc "Update VPC stack to ResiDataDEV account"
   task :update_dev_vpc do
     update_stack('VPC-stack-1440726816', 'base-cloud-formation/resi-data-vpc.json', 'residata-dev/parameters/rddev-vpc-params.json')
+  end
+
+  desc "Onceoff task-Create DNS records in route53 in ResiDataDEV account"
+  task :Onceoff_create_dev_route53 do
+    update_stack('DEV-dns-route53', 'base-cloud-formation/dns-route53-vpc.json', 'residata-dev/parameters/rddev-dns-route53-params.json')
   end
 
   desc "Create DEV S3 Bucket for data storage"
@@ -74,6 +70,12 @@ end
 
 namespace :residata_prod do
 
+
+  desc "Create assume role for Residata-Extractor in PROD"
+  task :prod_residata_extractor_role do
+    update_stack('residata-extractor-role', 'base-cloud-formation/residata-extractor-role.json','residata-prod/parameters/residata-extractor-params.json')
+  end
+
   desc "Create a deployment role to Prod"
   task :create_prod_shipperrole do
     update_stack('deployment-role', 'base-cloud-formation/iam-shipper-role.json','residata-prod/parameters/shipper-role-params.json')
@@ -94,6 +96,11 @@ namespace :residata_prod do
     update_stack('vpc', 'base-cloud-formation/resi-data-vpc.json', 'residata-prod/parameters/vpc-params.json')
   end
 
+
+  desc "Onceoff-Deploy route53 stack to Prod"
+  task :onceoff_create_prod_route53 do
+    update_stack('route53', 'residata-prod/cloud-formation/additional-route53-zone.json', 'residata-prod/parameters/dns-route53-params.json')
+  end
 
   desc "Add additional ACL to PublicSubnet in Prod account"
   task :add_additional_ACL do

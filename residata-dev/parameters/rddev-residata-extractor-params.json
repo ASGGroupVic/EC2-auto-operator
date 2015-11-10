@@ -1,0 +1,6 @@
+[
+  {
+    "ParameterKey": "CD_AssumeRole",
+    "ParameterValue": "arn:aws:iam::407346673801:role/iam-roles-ResiDataOmnitureReadOnly-1CTSZGOXBCAP4"
+  }
+]
