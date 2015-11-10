@@ -22,7 +22,7 @@ Dev: `residata-dev` (177242442824)
 
 Instructions below for {Env} = production, substitute prod for dev in Dev.
 
-Assumes you have access with TMI Admin rights, via https://idp.realestate.com.au/
+Assumes you have access with IAM Admin rights, via https://idp.realestate.com.au/
 
 ###Install Tools
 
@@ -81,6 +81,11 @@ Ensure [bucket names](residata-prod/parameters/create-bucket-params.json) are OK
 [amiRegisterBucketName](residata-prod/parameters/shipper-role-params.json) should point at bucket created in last step
 
 `rake residata_prod:create_prod_shipperrole`
+
+### IAM Role for the applications
+
+The role ARN number should be given to CRM team for the across account access.
+`rake residata_onceOff:create_residata_extractor_role`
 
 ###SNS Topics
 
