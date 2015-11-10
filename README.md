@@ -84,6 +84,7 @@ Ensure [bucket names](residata-prod/parameters/create-bucket-params.json) are OK
 
 ### IAM Role for the applications
 
+The Money team created a [data services](https://git.realestate.com.au/the-money/residata-extractor) for us.
 The role ARN number should be given to CRM team for the across account access.
 `rake residata_onceOff:create_residata_extractor_role`
 
