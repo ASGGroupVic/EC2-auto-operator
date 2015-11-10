@@ -57,7 +57,7 @@
                 {
                   "Effect": "Allow",
                   "Action": "sts:AssumeRole",
-                  "Resource": {"ref": "CD_AssumeRole"}
+                  "Resource": {"Ref": "CD_AssumeRole"}
                 }
               ]
             }
