@@ -58,7 +58,7 @@ Dev: https://rattic.eqx.realestate.com.au/cred/detail/4254/
 
 ###VPC
  
-Set subnet [CIDR params](residata-prod/parameters/vpc-params.json) based on [dev pattern](residata-dev/parameters/rddev-vpc-params.json) but using the prod CIDR block
+Set subnet [CIDR params](residata-prod/parameters/vpc-params.json) based on [dev pattern](residata-dev/parameters/rddev-vpc-params.json) but using the prod CIDR block. The main rule is to ensure the IP ranges don't overlap.
 
 `rake residata_prod:deploy_prod_vpc`
 
@@ -118,6 +118,12 @@ Then run the rake task to setup a splunk forwarder server pointing to Skynet spl
     |  +-------+                          |             |                                     |
     |                                     |             |                                     |
     +-------------------------------------+             +-------------------------------------+
+
+###Setup Role Permissions for Admin and Normaluser
+Go to IAM console in AWS, manually Create a NormalUser role similar to the Admin login.
+`rake residata_prod:create_prod_iam_role_policies`
+
+
 
 ##ToDo List
 
