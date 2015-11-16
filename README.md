@@ -41,7 +41,8 @@ rake residata_dev:create_dev_route53   # Create DNS zone and recordsets in route
 
 Tell GIA the name, they will register it with UltraDNS
 
-- Dev is done: `resi-data-dev.realestate.com.au` 
+- Dev is done: `resi-data-dev.realestate.com.au`
+- Prod: `resi-data-prod.realestate.com.au`  
 
 ###CIDR block
 
