@@ -5,6 +5,7 @@ This repository contains environment setup for AWS accounts owned by Resi Data &
 ##AWS Accounts
 
 Dev: `residata-dev` (177242442824)
+Prod: `residata-prod` ()  
 
 ##Repo Layout
 
@@ -12,27 +13,23 @@ Dev: `residata-dev` (177242442824)
 - [residata-dev/](residata-dev/):  templates & parameters for Dev
 - [residata-prod/](residata-prod/):  templates & parameters for Prod
 
-###Resi Data CI links
-
-[Agent Profile Reports](http://resi-bamboo.delivery.realestate.com.au/browse/AP)
-
-
-
 ##{Env} Setup
 
 Instructions below for {Env} = production, substitute prod for dev in Dev.
 
-Assumes you have access with IAM Admin rights, via https://idp.realestate.com.au/
+Firstly, claim one of pre-configured AWS accounts and fill in the account details [here] (https://community.rea-group.com/docs/DOC-36453). Then the Admin login will be provided by GIA, once the account is ready  for you to login via: https://idp.realestate.com.au/
 
 ###Install Tools
 
 Assumes Ruby 2.1 or higher is installed.
 ```
+git clone git@git.realestate.com.au:resi-lob/residata-aws-infrastructure.git
+cd residata-aws-infrastructure
 bundle install
 bundle exec rake -T
 
 Output:
-List of tasks that create/update stacks in AWS
+List of tasks that create/update cloudformation deployment stacks in AWS
 
 Example:
 rake residata_dev:create_dev_route53   # Create DNS zone and recordsets in route53 in your ResiDataDEV VPC
@@ -42,15 +39,17 @@ rake residata_dev:create_dev_route53   # Create DNS zone and recordsets in route
 
 `rake residata_prod:onceoff_create_prod_route53`
 
-Tell GIA the name, they will register with UltraDNS
+Tell GIA the name, they will register it with UltraDNS
 
-- Dev is done: `resi-data-dev.realestate.com.au` 
+- Dev is done: `resi-data-dev.realestate.com.au`
+- Prod: `resi-data-prod.realestate.com.au`  
 
 ###CIDR block
 
-Request a CIDR block for your VPC
+Request GIA to provide you a CIDR block for your new VPC. Then yourself work out the IP address ranges for each subnets. The main rule to pick an appropriate range is to ensure they don't overlap each other.
 
 - Dev is done: `10.49.36.0/22` 
+- IP range examples for different [DEV subnets] (/residata-dev/parameters/rddev-vpc-params.json)
 
 ###SSH Keypair
 
