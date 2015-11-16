@@ -46,14 +46,13 @@ Tell GIA the name, they will register it with UltraDNS
 
 ###CIDR block
 
-Request GIA to provide you a CIDR block for your new VPC. Then yourself work out the IP address ranges for each subnets. The main rule to pick an appropriate range is to ensure they don't overlap each other.
+Request GIA to provide you a CIDR block for the new VPC. 
 
 - Dev is done: `10.49.36.0/22` 
-- IP range examples for different [DEV subnets] (/residata-dev/parameters/rddev-vpc-params.json)
 
 ###SSH Keypair
 
-Created a SSH keypair from EC2 Console in your AWS account
+Created a SSH keypair from EC2 Console->KeyPairs in your AWS account. Then upload the key file to rattic.
 
 Dev: https://rattic.eqx.realestate.com.au/cred/detail/4254/
 
@@ -81,13 +80,13 @@ Ensure [bucket names](residata-prod/parameters/create-bucket-params.json) are OK
 
 `rake residata_prod:create_prod_shipperrole`
 
-### Assume Role for app residata-extractor
+### Assume Role for the application residata-extractor
+
+To be able to access s3 bucket across differnt AWS accounts, you need to provide the new AWS account ID to ConsumerData team (Danial Pearce), then he will come back with the CD_AssumeRole ARN number that you can use it to update the [parameter](/residata-prod/parameters/residata-extractor-params.json) .
 
 The Money team created a [data services](https://git.realestate.com.au/the-money/residata-extractor) for us.
-The role ARN number should be given to them for the across account access.
+The role ARN number created in this task should be given to them for the across account access.
 
-We download Omniture reports via [Omniture Reprot Handler](https://git.realestate.com.au/consumer-data/omniture-report-handler).
-To be able to access the s3 bucket owned by ConsumerData, the Parameter CD_AssumeRole should be provided by their team.
 
 `rake residata_prod:prod_residata_extractor_role `
 
@@ -100,7 +99,7 @@ To be able to access the s3 bucket owned by ConsumerData, the Parameter CD_Assum
 Before setup the Forwarder, create a index called resi-data via the pull request from [GIA repository](https://git.realestate.com.au/infrastructure/splunk-deployment/blob/master/ansible/roles/indexer-master/files/idxcluster/resi/local/indexes.conf)
 Then run the rake task to setup a splunk forwarder server pointing to Skynet splunk
 
-`rake residata_dev:create_dev_SplunkFw`
+`rake residata_prod:create_prod_SplunkFw`
 
     +------+-----+------------------------+             +-------------------------------------+
     |  RESI-DATA                          |             | SKYNET                              |
