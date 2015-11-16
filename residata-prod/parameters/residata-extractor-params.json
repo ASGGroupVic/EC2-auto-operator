@@ -1,6 +1,6 @@
 [
   {
-    "ParameterKey": "CD_AssumeRole",
+    "ParameterKey": "CDAssumeRole",
     "ParameterValue": ""
   }
 ]

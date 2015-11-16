@@ -1,8 +1,13 @@
 {
   "AWSTemplateFormatVersion": "2010-09-09",
   "Description": "Assumable Role for the application residata-extractor to use",
-  "Resources": {
-    "IAMRole": {
+  "Parameters": {
+    "CDAssumeRole": {
+      "Description": "Assume Role ARN provided by ConsumerData team",
+      "Type": "String"
+    }
+  },"Resources": {
+    "AssumeRole": {
       "Type": "AWS::IAM::Role",
       "Properties": {
         "AssumeRolePolicyDocument": {
@@ -57,7 +62,7 @@
                 {
                   "Effect": "Allow",
                   "Action": "sts:AssumeRole",
-                  "Resource": {"Ref": "CD_AssumeRole"}
+                  "Resource": { "Ref":"CDAssumeRole" }
                 }
               ]
             }
@@ -69,7 +74,7 @@
   "Outputs": {
     "RoleARN": {
       "Value": {
-        "Fn::GetAtt": [ "IAMRole", "Arn" ]
+        "Fn::GetAtt": [ "AssumeRole", "Arn" ]
       }
     }
   }
