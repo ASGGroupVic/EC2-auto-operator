@@ -43,6 +43,7 @@ Tell GIA the name, they will register it with UltraDNS
 
 - Dev is done: `resi-data-dev.realestate.com.au`
 - Prod: `resi-data-prod.realestate.com.au`  
+This CloudFormation stack can't be updated. You have to delete it before rerun.
 
 ###CIDR block
 
@@ -68,7 +69,7 @@ Edit [params](residata-prod/parameters/security-group-params.json) to set `VpcId
 
 `rake residata_prod:create_prod_SG`
 
-###S3 Buckets (Once Off)
+###S3 Buckets
 
 Ensure [bucket names](residata-prod/parameters/create-bucket-params.json) are OK 
 
