@@ -203,13 +203,13 @@
               "Id": "30 days log objects expire rule",
               "ExpirationInDays": 30,
               "Status": "Enabled",
-              "Prefix": "logs/"
+              "Prefix": "logs"
             },
             {
-              "Id": "3 years input raw data expire rule",
+              "Id": "3 years archived raw data expire rule",
               "ExpirationInDays": 1095,
               "Status": "Enabled",
-              "Prefix": "input/",
+              "Prefix": "Archive",
               "Transition": {
                 "StorageClass": "Glacier",
                 "TransitionInDays": "180"

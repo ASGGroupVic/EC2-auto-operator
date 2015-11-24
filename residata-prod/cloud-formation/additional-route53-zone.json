@@ -99,7 +99,7 @@
         "Type": "CNAME",
         "TTL": "300",
         "ResourceRecords": [
-          "nat-a.resi-data-dev.realestate.com.au."
+          "nat-a.resi-data-prod.realestate.com.au."
         ]
       }
     } ,
@@ -124,7 +124,7 @@
         "Type": "CNAME",
         "TTL": "300",
         "ResourceRecords": [
-          "nat-b.resi-data-dev.realestate.com.au."
+          "nat-b.resi-data-prod.realestate.com.au."
         ]
       }
     }

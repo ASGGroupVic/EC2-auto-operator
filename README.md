@@ -82,7 +82,7 @@ Ensure [bucket names](residata-prod/parameters/create-bucket-params.json) are OK
 
 ### Assume Role for the application residata-extractor
 
-To be able to access s3 bucket across differnt AWS accounts, you need to provide the new AWS account ID to ConsumerData team (Danial Pearce), then he will come back with the CD_AssumeRole ARN number that you can use it to update the [parameter](/residata-prod/parameters/residata-extractor-params.json) .
+To be able to access s3 bucket across different AWS accounts, you need to provide your new AWS account ID to ConsumerData team (Danial Pearce), then he will come back with the CD_AssumeRole ARN number that you can use to update the [parameter](/residata-prod/parameters/residata-extractor-params.json) .
 
 The Money team created a [data services](https://git.realestate.com.au/the-money/residata-extractor) for us.
 The role ARN number created in this task should be given to them for the across account access.
@@ -120,7 +120,7 @@ Then run the rake task to setup a splunk forwarder server pointing to Skynet spl
     +-------------------------------------+             +-------------------------------------+
 
 ###Setup Role Permissions for Admin and Normaluser
-Go to IAM console in AWS, manually Create a NormalUser role similar to the Admin login.
+Go to IAM console in AWS, manually Create a NormalUser role similar to the Admin login.Then grant permssions via the following command:
 `rake residata_prod:create_prod_iam_role_policies`
 
 

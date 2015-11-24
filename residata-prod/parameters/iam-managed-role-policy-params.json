@@ -1,4 +1,4 @@
 {
-  "administratorRoleName": "ResiData-Admin",
-  "developerRoleName": "ResiData-NormalUser"
+  "administratorRoleName": "ResiData-Prod-Admin",
+  "developerRoleName": "ResiData-Prod-NormalUser"
 }
