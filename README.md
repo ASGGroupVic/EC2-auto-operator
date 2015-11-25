@@ -17,7 +17,7 @@ Prod: `residata-prod` ()
 
 Instructions below for {Env} = production, substitute prod for dev in Dev.
 
-Firstly, claim one of pre-configured AWS accounts and fill in the account details [here] (https://community.rea-group.com/docs/DOC-36453). Then the Admin login will be provided by GIA, once the account is ready  for you to login via: https://idp.realestate.com.au/
+Firstly, claim one of pre-configured AWS accounts and fill in the account details [here] (https://community.rea-group.com/docs/DOC-36453). The Admin login will be provided by GIA, once the account is ready for you to access via: https://idp.realestate.com.au/
 
 ###Install Tools
 
@@ -43,6 +43,7 @@ Tell GIA the name, they will register it with UltraDNS
 
 - Dev is done: `resi-data-dev.realestate.com.au`
 - Prod: `resi-data-prod.realestate.com.au`  
+
 This CloudFormation stack can't be updated. You have to delete it before rerun.
 
 ###CIDR block
