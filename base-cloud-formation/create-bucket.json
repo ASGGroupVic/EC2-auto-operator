@@ -1,6 +1,6 @@
 {
   "AWSTemplateFormatVersion":"2010-09-09",
-  "Description":"S3 Buckets for Resi Data Analytics",
+  "Description":"Common S3 Buckets for Resi Data Analytics",
   "Parameters":{
     "amiRegisterBucketName":{
       "Description":"Name of S3 bucket for registered AMIs",
@@ -8,17 +8,14 @@
     },
     "agentReportBucketName":{
       "Description":"Name of S3 bucket for residata agent reports",
-      "Type":"String",
-      "Default":"agent-rpt-dev"
+      "Type":"String"
     },
     "elasticLoadBalancingBucketName":{
       "Description":"Name of S3 bucket for elb logs",
-      "Type":"String",
-      "Default":"rea-residata-dev-elb"
+      "Type":"String"
     },
     "EmailAddress": {
       "Description":"Name of S3 bucket contract info",
-      "Default": "resi-data-dev@rea-group.com",
       "Type": "String"
     } ,
     "principalList": {
@@ -108,7 +105,8 @@
       "Type":"AWS::S3::BucketPolicy",
       "Metadata":{
         "783225319266":"ELB Account ID for Sydney",
-        "177242442824":"Residata Dev"
+        "177242442824":"Residata Dev",
+        "563560393941":"Residata Prod"
       },
       "DependsOn": [
         "ElasticLoadBalancingBucket"
@@ -235,9 +233,6 @@
     },
     "AgentReportBucketNamePolicy":{
       "Type":"AWS::S3::BucketPolicy",
-      "Metadata":{
-        "177242442824":"Residata-Dev"
-      },
       "DependsOn": [
         "AgentReportBucket"
       ],
@@ -248,8 +243,20 @@
         "PolicyDocument":{
           "Statement":[
             {
-              "Principal":{
-                "AWS":{"Ref":"principalList"}
+              "Principal": {
+                "AWS": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:iam::",
+                      {
+                        "Ref": "AWS::AccountId"
+                      },
+                      ":",
+                      "root"
+                    ]
+                  ]
+                }
               },
               "Action":[
                 "s3:Get*",
