@@ -112,7 +112,7 @@
     "KeyPairPrefix": {
       "Description": "The AWS SSH Keypair name to use; note that it will have the AWS Region appended to it (eg keypair-ap-southeast-2)",
       "Type": "String",
-      "Default": "platform-team"
+      "Default": "resi-data"
     },
     "DNSServerAIP": {
       "Description": "The persistent IP that you will use for the DNS server in AZ A",
