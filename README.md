@@ -54,7 +54,7 @@ Request GIA to provide you a CIDR block for the new VPC.
 
 ###SSH Keypair
 
-Created a SSH keypair from EC2 Console->KeyPairs in your AWS account. Then upload the key file to rattic.
+Created a SSH keypair called residata from EC2 Console->KeyPairs in your AWS account. Then upload the key file to rattic.
 
 Dev: https://rattic.eqx.realestate.com.au/cred/detail/4254/
 
