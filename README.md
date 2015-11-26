@@ -72,7 +72,7 @@ Edit [params](residata-prod/parameters/security-group-params.json) to set `VpcId
 
 ###S3 Buckets
 
-Ensure [bucket names](residata-prod/parameters/create-bucket-params.json) are OK 
+Ensure [params](residata-prod/parameters/create-bucket-params.json) are OK 
 
 `rake residata_prod:create_prod_bucket`
 
