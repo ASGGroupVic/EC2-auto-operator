@@ -9,7 +9,7 @@
   },
   {
     "ParameterKey": "agentReportBucketName",
-    "ParameterValue": "agent-rpt"
+    "ParameterValue": "ResiDataLake"
   },
   {
     "ParameterKey": "EmailAddress",
