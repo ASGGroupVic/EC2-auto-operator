@@ -5,7 +5,7 @@ This repository contains environment setup for AWS accounts owned by Resi Data &
 ##AWS Accounts
 
 Dev: `residata-dev` (177242442824)
-Prod: `residata-prod` ()  
+Prod: `residata-prod` (563560393941)  
 
 ##Repo Layout
 
