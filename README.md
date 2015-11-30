@@ -51,6 +51,7 @@ This CloudFormation stack can't be updated. You have to delete it before rerun.
 Request GIA to provide you a CIDR block for the new VPC. 
 
 - Dev is done: `10.49.36.0/22` 
+- Prod: 10.49.60.0/22
 
 ###SSH Keypair
 
