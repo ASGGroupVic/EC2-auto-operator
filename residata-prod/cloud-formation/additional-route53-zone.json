@@ -16,43 +16,6 @@
         }
       }
     },
-    "myDNSRecord1": {
-      "Type": "AWS::Route53::RecordSet",
-      "DependsOn": "VPCHostedZone",
-      "Properties": {
-        "HostedZoneName": {
-          "Ref": "HostedZone"
-        },
-        "Name": {
-          "Ref": "HostedZone"
-        },
-        "Type": "NS",
-        "TTL": "17280",
-        "ResourceRecords": [
-          "ns-1502.awsdns-59.org.",
-          "ns-195.awsdns-24.com.",
-          "ns-869.awsdns-44.net.",
-          "ns-1651.awsdns-14.co.uk."
-        ]
-      }
-    },
-    "myDNSRecord2": {
-      "Type": "AWS::Route53::RecordSet",
-      "DependsOn": "VPCHostedZone",
-      "Properties": {
-        "HostedZoneName": {
-          "Ref": "HostedZone"
-        },
-        "Name": {
-          "Ref": "HostedZone"
-        },
-        "Type": "SOA",
-        "TTL": "900",
-        "ResourceRecords": [
-          "ns-1502.awsdns-59.org. awsdns-hostmaster.amazon.com. 1 7200 900 1209600 86400"
-        ]
-      }
-    } ,
     "myDNSRecord3": {
       "Type": "AWS::Route53::RecordSet",
       "DependsOn": "VPCHostedZone",
