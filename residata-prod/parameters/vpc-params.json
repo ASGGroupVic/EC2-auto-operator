@@ -13,5 +13,7 @@
   "DNSSearchPath": "ap-southeast-2.compute.internal",
   "DNSServerAIP": "AmazonProvidedDNS",
   "DNSServerBIP": "AmazonProvidedDNS",
-  "KeyPairPrefix": "residata"
+  "KeyPairPrefix": "residata",
+  "ParameterKey": "FallbackDNSServer",
+  "ParameterValue": "AmazonProvidedDNS"
 }
