@@ -9,7 +9,7 @@
   "NATSubnetBCIDR": "10.49.60.96/27",
   "PrivateSubnetACIDR": "10.49.61.0/27",
   "PrivateSubnetBCIDR": "10.49.61.128/27",
-  "HostedZone": "resi-data-prod.realestate.com.au",
+  "DNSDomain": "resi-data-prod.realestate.com.au",
   "DNSSearchPath": "ap-southeast-2.compute.internal",
   "DNSServerAIP": "AmazonProvidedDNS",
   "DNSServerBIP": "AmazonProvidedDNS",
