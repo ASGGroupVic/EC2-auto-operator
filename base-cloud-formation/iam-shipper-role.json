@@ -33,7 +33,26 @@
               "Statement": [
                 {
                   "Action": [
-                    "autoscaling:*",
+                    "autoscaling:CreateAutoScalingGroup",
+                    "autoscaling:CreateLaunchConfiguration",
+                    "autoscaling:DeleteAutoScalingGroup",
+                    "autoscaling:DeleteLaunchConfiguration",
+                    "autoscaling:DeletePolicy",
+                    "autoscaling:DescribeAutoScalingGroups",
+                    "autoscaling:DescribeAutoScalingInstances",
+                    "autoscaling:DescribeLaunchConfigurations",
+                    "autoscaling:DescribePolicies",
+                    "autoscaling:DescribeScalingActivities",
+                    "autoscaling:DescribeScheduledActions",
+                    "autoscaling:DescribeTags",
+                    "autoscaling:ResumeProcesses",
+                    "autoscaling:PutNotificationConfiguration",
+                    "autoscaling:PutScalingPolicy",
+                    "autoscaling:PutScheduledUpdateGroupAction",
+                    "autoscaling:SetDesiredCapacity",
+                    "autoscaling:SuspendProcesses",
+                    "autoscaling:TerminateInstanceInAutoScalingGroup",
+                    "autoscaling:UpdateAutoScalingGroup",
                     "cloudformation:CreateStack",
                     "cloudformation:DeleteStack",
                     "cloudformation:DescribeStackEvents",
@@ -115,9 +134,9 @@
                     "sdb:ListDomains",
                     "sts:AssumeRole",
                     "SNS:CreateTopic",
-		    "SNS:DeleteTopic",
-		    "SNS:ListTopics",
-		    "SNS:Subscribe"
+                    "SNS:DeleteTopic",
+                    "SNS:ListTopics",
+                    "SNS:Subscribe"
                   ],
                   "Effect": "Allow",
                   "Resource": "*"
