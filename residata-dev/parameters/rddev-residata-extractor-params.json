@@ -2,5 +2,8 @@
   {
     "ParameterKey": "CDAssumeRole",
     "ParameterValue": "arn:aws:iam::407346673801:role/iam-roles-ResiDataOmnitureReadOnly-1CTSZGOXBCAP4"
+  },
+  {  "ParameterKey": "AppBucketName",
+     "ParameterValue": "s3://agent-rpt-dev"
   }
 ]

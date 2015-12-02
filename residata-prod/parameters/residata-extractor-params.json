@@ -2,5 +2,8 @@
   {
     "ParameterKey": "CDAssumeRole",
     "ParameterValue": ""
+  } ,
+  {  "ParameterKey": "AppBucketName",
+    "ParameterValue": "s3://residatalake"
   }
 ]

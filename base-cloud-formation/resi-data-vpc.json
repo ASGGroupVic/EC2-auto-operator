@@ -145,8 +145,7 @@
     "VPNGatewayAttachment": {
       "Type": "AWS::EC2::VPCGatewayAttachment",
       "Properties": {
-        "VpcId": { "Ref": "VPC" },
-        "VpnGatewayId": { "Ref": "VPNGateway" }
+        "VpcId": { "Ref": "VPC" }
       }
     },
 

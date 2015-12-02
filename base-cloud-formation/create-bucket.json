@@ -202,16 +202,6 @@
               "ExpirationInDays": 30,
               "Status": "Enabled",
               "Prefix": "logs"
-            },
-            {
-              "Id": "3 years archived raw data expire rule",
-              "ExpirationInDays": 1095,
-              "Status": "Enabled",
-              "Prefix": "Archive",
-              "Transition": {
-                "StorageClass": "Glacier",
-                "TransitionInDays": "180"
-              }
             }
           ]
         },

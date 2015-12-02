@@ -5,8 +5,13 @@
     "CDAssumeRole": {
       "Description": "Assume Role ARN provided by ConsumerData team",
       "Type": "String"
-    }
-  },"Resources": {
+    },
+     "AppBucketName": {
+      "Description": "Application Bucket Name ",
+      "Type": "String"
+      }
+  },
+  "Resources": {
     "AssumeRole": {
       "Type": "AWS::IAM::Role",
       "Properties": {
@@ -42,8 +47,37 @@
               "Statement": [
                 {
                   "Effect": "Allow",
-                  "Action": "s3:*",
-                  "Resource": "*"
+                  "Action": [
+                    "s3:GetObject",
+                    "s3:PutObject",
+                    "s3:DeleteObject",
+                    "s3:ListBucket"
+                  ],
+                  "Resource": [
+                    {
+                      "Fn::Join":[
+                        "",
+                        [
+                          "arn:aws:s3:::",
+                          {
+                            "Ref":"AppBucketName"
+                          }
+                        ]
+                      ]
+                    },
+                    {
+                      "Fn::Join":[
+                        "",
+                        [
+                          "arn:aws:s3:::",
+                          {
+                            "Ref":"AppBucketName"
+                          },
+                          "/*"
+                        ]
+                      ]
+                    }
+                  ]
                 },
                 {
                   "Effect": "Allow",
