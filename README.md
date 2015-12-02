@@ -72,23 +72,25 @@ Edit [params](residata-prod/parameters/security-group-params.json) to set `VpcId
 
 `rake residata_prod:create_prod_SG`
 
-###S3 Buckets
-
-Ensure [params](residata-prod/parameters/create-bucket-params.json) are OK, and bucket name must be lowercase. 
-
-`rake residata_prod:create_prod_bucket`
-
 ###Shipper Role
 
 [amiRegisterBucketName](residata-prod/parameters/shipper-role-params.json) should point at bucket created in last step
 
 `rake residata_prod:create_prod_shipperrole`
 
+
+###S3 Buckets
+
+Ensure [params](residata-prod/parameters/create-bucket-params.json) are OK, and bucket name must be lowercase. 
+
+`rake residata_prod:create_prod_bucket`
+
+
 ### Assume Role for the application residata-extractor
 
 To be able to access s3 bucket across different AWS accounts, you need to provide your new AWS account ID to ConsumerData team (Danial Pearce), then he will come back with the CD_AssumeRole ARN number that you can use to update the [parameter](/residata-prod/parameters/residata-extractor-params.json) .
 
-The Money team created a [data services](https://git.realestate.com.au/the-money/residata-extractor) for us.
+The Money team created a [data services](https://git.realestate.com.au/the-money/residata-extractor/blob/master/cloudformation/residata-cdm-bucket.json) for us. Please make sure they are using the correct extractor role from us.
 The role ARN number created in this task should be given to them for the across account access.
 
 
