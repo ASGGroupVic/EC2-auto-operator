@@ -156,7 +156,7 @@
     "ELBSecurityGroup":{
       "Type":"AWS::EC2::SecurityGroup",
       "Properties":{
-        "GroupDescription":"Security group for Splunk Forwarder ELB",
+        "GroupDescription":"Security group for SplunkforwarderELB",
         "VpcId":{
           "Fn::FindInMap":[
             "VpcMap",

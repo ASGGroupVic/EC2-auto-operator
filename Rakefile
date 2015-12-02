@@ -114,6 +114,6 @@ namespace :residata_prod do
 
   desc "Create a Splunkforwarder Server to Prod"
   task :create_prod_SplunkFw do
-    update_stack('PROD-SplunkFw', 'base-cloud-formation/splunkforwarder.json', 'residata-prod/parameters/splunkforwarder-params.json')
+    update_stack('SplunkFw', 'base-cloud-formation/splunkforwarder.json', 'residata-prod/parameters/splunkforwarder-params.json')
   end
 end

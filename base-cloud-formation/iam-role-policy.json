@@ -12,20 +12,91 @@
     }
   },
   "Resources": {
-    "AllowAll": {
+    "AdminRolePolicy": {
       "Type": "AWS::IAM::ManagedPolicy",
       "Properties": {
         "Description": "allow all actions",
         "Path": "/adminManaged/",
         "PolicyDocument": {
-          "Version":"2012-10-17",
+          "Version": "2012-10-17",
           "Statement": [
             {
-              "Action": [
-                "*"
-              ],
+              "Sid": "AllowAll",
               "Effect": "Allow",
+              "Action": "*",
               "Resource": "*"
+            },
+            {
+              "Sid": "PreventMuckWithSAMLProviders",
+              "Action": [
+                "iam:DeleteAccountAlias",
+                "iam:CreateSAMLProvider",
+                "iam:DeleteSAMLProvider",
+                "iam:UpdateSAMLProvider"
+              ],
+              "Effect": "Deny",
+              "Resource": "*"
+            },
+            {
+              "Sid": "PreventCreateIAMUsers",
+              "Action": [
+                "iam:AddUserToGroup",
+                "iam:CreateAccessKey",
+                "iam:CreateLoginProfile",
+                "iam:CreateUser",
+                "iam:DeleteAccountPasswordPolicy"
+              ],
+              "Effect": "Deny",
+              "Resource": "*"
+            },
+            {
+              "Sid": "PreventMuckWithCloudtrail",
+              "Action": [
+                "cloudtrail:CreateTrail",
+                "cloudtrail:DeleteTrail",
+                "cloudtrail:StartLogging",
+                "cloudtrail:StopLogging",
+                "cloudtrail:UpdateTrail"
+              ],
+              "Effect": "Deny",
+              "Resource": "*"
+            },
+            {
+              "Sid": "AllowAssumeRolesInOtherAccounts",
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Resource": "arn:aws:iam::*:role/*"
+            },
+            {
+              "Sid": "CannotAssumeRolesInThisAccount",
+              "Action": "sts:AssumeRole",
+              "Effect": "Deny",
+              "Resource":
+              {
+                "Fn::Join":[
+                  "",
+                  [
+                    "arn:aws:iam::",
+                    {
+                      "Ref":"AWS::AccountId"
+                    },
+                    ":role/*"
+                  ]
+                ]
+              }
+            },
+            {
+              "Sid": "HonorDeletionProtectionOnRDSDBInstances",
+              "Action": "rds:DeleteDBInstance",
+              "Effect": "Deny",
+              "Resource": "arn:aws:rds:*:*:db:*",
+              "Condition": {
+                "StringEquals": {
+                  "rds:db-tag/deletion-protection": [
+                    "true"
+                  ]
+                }
+              }
             }
           ]
         },
@@ -36,7 +107,7 @@
         ]
       }
     },
-    "RestrictedActions": {
+    "RestrictedActionsNormalUserPolicy": {
       "Type": "AWS::IAM::ManagedPolicy",
       "Properties": {
         "Description": "Restricted actions for NormalUser",
@@ -54,6 +125,7 @@
               "Sid": "PermitManageApplicationUsers",
               "Action": [
                 "iam:CreateInstanceProfile",
+                "iam:*Policy*",
                 "iam:*Role*",
                 "iam:*Instance*",
                 "iam:GetUser",
@@ -65,7 +137,8 @@
               "Resource": [
                 "arn:aws:iam::*:instance-profile/*",
                 "arn:aws:iam::*:server-certificate/*",
-                "arn:aws:iam::*:role/*"
+                "arn:aws:iam::*:role/*",
+                "arn:aws:iam::*:policy/*"
               ]
             },
             {
@@ -95,16 +168,16 @@
               "Sid": "CannotAssumeRolesInThisAccount",
               "Action": "sts:AssumeRole",
               "Effect": "Deny",
-              "Resource": {
-                "Fn::Join": [
+              "Resource":
+              {
+                "Fn::Join":[
                   "",
                   [
                     "arn:aws:iam::",
                     {
-                      "Ref": "AWS::AccountId"
+                      "Ref":"AWS::AccountId"
                     },
-                    ":",
-                    "role/*"
+                    ":role/*"
                   ]
                 ]
               }
@@ -143,7 +216,7 @@
               "Effect": "Deny",
               "Resource": "arn:aws:rds:*:*:db:*",
               "Condition": {
-                "streq": {
+                "StringEquals": {
                   "rds:db-tag/deletion-protection": [
                     "true"
                   ]
@@ -155,6 +228,12 @@
               "Effect": "Deny",
               "Action": "cloudtrail:*",
               "Resource": "*"
+            },
+            {
+              "Sid": "AllowDetectEnvironmentViaAcctAliases",
+              "Effect": "Allow",
+              "Action": "iam:ListAccountAliases",
+              "Resource": "arn:aws:iam::*:role/*"
             }
           ]
         },
@@ -167,4 +246,6 @@
     }
   }
 }
+
+
 
