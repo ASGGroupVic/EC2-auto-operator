@@ -102,8 +102,9 @@ The role ARN number created in this task should be given to them for the across 
 
 ###Splunk Forwarder
 
-Before setup the Forwarder, create a index called resi-data via the pull request from [GIA repository](https://git.realestate.com.au/infrastructure/splunk-deployment/blob/master/ansible/roles/indexer-master/files/idxcluster/resi/local/indexes.conf)
-Then run the rake task to setup a splunk forwarder server pointing to Skynet splunk
+- create a index called resi-data via the pull request from [GIA repository](https://git.realestate.com.au/infrastructure/splunk-deployment/blob/master/ansible/roles/indexer-master/files/idxcluster/resi/local/indexes.conf).
+- in the current splunkforward CloudFormation template, update [Prod env configurations](https://git.realestate.com.au/resi-lob/residata-aws-infrastructure/blob/master/base-cloud-formation/splunkforwarder.json)
+- Finally run the rake task to setup a splunk forwarder server pointing to Skynet splunk
 
 `rake residata_prod:create_prod_SplunkFw`
 

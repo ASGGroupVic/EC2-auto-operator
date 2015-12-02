@@ -133,10 +133,12 @@
                     "route53:ListHostedZones",
                     "sdb:ListDomains",
                     "sts:AssumeRole",
-                    "SNS:CreateTopic",
-                    "SNS:DeleteTopic",
-                    "SNS:ListTopics",
-                    "SNS:Subscribe"
+                    "sns:CreateTopic",
+                    "sns:DeleteTopic",
+                    "sns:ListTopics",
+                    "sns:Subscribe",
+                    "sns:SetTopicAttributes",
+                    "sns:SetEndpointAttributes"
                   ],
                   "Effect": "Allow",
                   "Resource": "*"
