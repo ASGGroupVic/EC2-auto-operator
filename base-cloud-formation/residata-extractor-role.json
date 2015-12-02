@@ -60,7 +60,7 @@
                         [
                           "arn:aws:s3:::",
                           {
-                            "Ref":"AppBucketName"
+                            "Ref":"AppObjctName"
                           }
                         ]
                       ]
@@ -71,7 +71,38 @@
                         [
                           "arn:aws:s3:::",
                           {
-                            "Ref":"AppBucketName"
+                            "Ref":"AppObjctName"
+                          },
+                          "/*"
+                        ]
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "s3:PutObject"
+                  ],
+                  "Resource": [
+                    {
+                      "Fn::Join":[
+                        "",
+                        [
+                          "arn:aws:s3:::",
+                          {
+                            "Ref":"ArchiveObjctName"
+                          }
+                        ]
+                      ]
+                    },
+                    {
+                      "Fn::Join":[
+                        "",
+                        [
+                          "arn:aws:s3:::",
+                          {
+                            "Ref":"ArchiveObjctName"
                           },
                           "/*"
                         ]

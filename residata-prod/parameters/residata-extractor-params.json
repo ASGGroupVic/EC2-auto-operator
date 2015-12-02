@@ -3,7 +3,11 @@
     "ParameterKey": "CDAssumeRole",
     "ParameterValue": ""
   } ,
-  {  "ParameterKey": "AppBucketName",
-    "ParameterValue": "s3://residatalake"
+  {
+    "ParameterKey": "AppObjctName",
+    "ParameterValue": "residatalake/rawdata"
+  },
+  {  "ParameterKey": "ArchiveObjctName",
+    "ParameterValue": "residatalake/historical"
   }
 ]
