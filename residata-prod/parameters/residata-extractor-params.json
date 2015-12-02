@@ -1,13 +1,18 @@
 [
   {
     "ParameterKey": "CDAssumeRole",
-    "ParameterValue": ""
-  } ,
-  {
-    "ParameterKey": "AppObjctName",
+    "ParameterValue": "arn:aws:iam::407346673801:role/iam-roles-ResiDataOmnitureReadOnly-1CTSZGOXBCAP4"
+  },
+  {  "ParameterKey": "AppObjctName",
     "ParameterValue": "residatalake/rawdata"
   },
   {  "ParameterKey": "ArchiveObjctName",
     "ParameterValue": "residatalake/historical"
+  },
+  {  "ParameterKey": "AppBucketName",
+    "ParameterValue": "residatalake"
+  },
+  {  "ParameterKey": "CRMObjctName",
+    "ParameterValue": "residata-cdm-prod/AccountManagers"
   }
 ]

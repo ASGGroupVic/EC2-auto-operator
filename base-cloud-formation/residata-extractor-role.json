@@ -6,10 +6,22 @@
       "Description": "Assume Role ARN provided by ConsumerData team",
       "Type": "String"
     },
-     "AppBucketName": {
-      "Description": "Application Bucket Name ",
+     "AppObjctName": {
+      "Description": "Application S3Bucket Object Name ",
       "Type": "String"
-      }
+      },
+    "ArchiveObjctName": {
+      "Description": "S3Bucket Object Name for Data Archiving",
+      "Type": "String"
+    },
+    "AppBucketName": {
+      "Description": "Application S3Bucket Name ",
+      "Type": "String"
+    },
+    "CRMObjctName": {
+      "Description": "S3Bucket Object Name for Data Archiving",
+      "Type": "String"
+    }
   },
   "Resources": {
     "AssumeRole": {
@@ -20,19 +32,6 @@
             {
               "Effect": "Allow",
               "Principal": {
-                "AWS": {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:aws:iam::",
-                      {
-                        "Ref": "AWS::AccountId"
-                      },
-                      ":",
-                      "root"
-                    ]
-                  ]
-                },
                 "Service": "ec2.amazonaws.com"
               },
               "Action": "sts:AssumeRole"
@@ -49,9 +48,43 @@
                   "Effect": "Allow",
                   "Action": [
                     "s3:GetObject",
+                    "s3:ListBucket",
+                    "s3:GetBucketLocation"
+                  ],
+                  "Resource": [
+                    {
+                      "Fn::Join":[
+                        "",
+                        [
+                          "arn:aws:s3:::",
+                          {
+                            "Ref":"AppBucketName"
+                          }
+                        ]
+                      ]
+                    },
+                    {
+                      "Fn::Join":[
+                        "",
+                        [
+                          "arn:aws:s3:::",
+                          {
+                            "Ref":"AppBucketName"
+                          },
+                          "/*"
+                        ]
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "s3:GetObject",
                     "s3:PutObject",
                     "s3:DeleteObject",
-                    "s3:ListBucket"
+                    "s3:ListBucket",
+                    "s3:GetBucketLocation"
                   ],
                   "Resource": [
                     {
@@ -123,6 +156,39 @@
                     "autoscaling:SetDesiredCapacity"
                   ],
                   "Resource": "*"
+                },
+                {
+                  "Resource": [
+                    {
+                      "Fn::Join":[
+                        "",
+                        [
+                          "arn:aws:s3:::",
+                          {
+                            "Ref":"CRMObjctName"
+                          }
+                        ]
+                      ]
+                    },
+                    {
+                      "Fn::Join":[
+                        "",
+                        [
+                          "arn:aws:s3:::",
+                          {
+                            "Ref":"CRMObjctName"
+                          },
+                          "/*"
+                        ]
+                      ]
+                    }
+                  ],
+                  "Action": [
+                    "s3:GetObject",
+                    "s3:ListBucket",
+                    "s3:GetBucketLocation"
+                  ],
+                  "Effect": "Allow"
                 },
                 {
                   "Effect": "Allow",

@@ -13,10 +13,12 @@
   },
   "Resources": {
     "AllowAll": {
+      "Type": "AWS::IAM::ManagedPolicy",
       "Properties": {
         "Description": "allow all actions",
         "Path": "/adminManaged/",
         "PolicyDocument": {
+          "Version":"2012-10-17",
           "Statement": [
             {
               "Action": [
@@ -25,181 +27,75 @@
               "Effect": "Allow",
               "Resource": "*"
             }
-          ],
-          "Version": "2012-10-17"
+          ]
         },
         "Roles": [
           {
             "Ref": "administratorRoleName"
-          },
-          {
-            "Ref": "developerRoleName"
           }
         ]
-      },
-      "Type": "AWS::IAM::ManagedPolicy"
+      }
     },
-    "DenyActionsRequireAdminAccess": {
+    "RestrictedActions": {
+      "Type": "AWS::IAM::ManagedPolicy",
       "Properties": {
-        "Description": "Deny actions that require admin access",
+        "Description": "Restricted actions for NormalUser",
         "Path": "/adminManaged/",
         "PolicyDocument": {
+          "Version": "2012-10-17",
           "Statement": [
             {
-              "Action": [
-                "cloudtrail:DeleteTrail",
-                "cloudtrail:StopLogging",
-                "cloudtrail:UpdateTrail"
-              ],
-              "Effect": "Deny",
-              "Resource": "*"
+              "Sid": "PermitAllNonIAM",
+              "Action": "*",
+              "Effect": "Allow",
+              "NotResource": "arn:aws:iam::*"
             },
             {
+              "Sid": "PermitManageApplicationUsers",
               "Action": [
-                "config:DeleteDeliveryChannel",
-                "config:PutConfigurationRecorder",
-                "config:PutDeliveryChannel",
-                "config:StopConfigurationRecorder"
+                "iam:CreateInstanceProfile",
+                "iam:*Role*",
+                "iam:*Instance*",
+                "iam:GetUser",
+                "iam:ListAccessKeys",
+                "iam:ListUsers",
+                "iam:*ServerCertificate*"
               ],
-              "Effect": "Deny",
-              "Resource": "*"
-            },
-            {
-              "Action": [
-                "iam:CreateSAMLProvider",
-                "iam:DeleteAccountAlias",
-                "iam:DeleteAccountPasswordPolicy",
-                "iam:DeleteLoginProfile",
-                "iam:DeleteSAMLProvider",
-                "iam:DeleteVirtualMFADevice",
-                "iam:ResyncMFADevice",
-                "iam:UpdateSAMLProvider"
-              ],
-              "Effect": "Deny",
-              "Resource": "*"
-            },
-            {
-              "Action": [
-                "iam:Put*",
-                "iam:Add*",
-                "iam:Create*",
-                "iam:Change*",
-                "iam:Delete*",
-                "iam:Remove*",
-                "iam:Update*",
-                "iam:Upload*",
-                "iam:Set*",
-                "iam:Pass*",
-                "iam:Attach*",
-                "iam:Detach*",
-                "iam:Resync*"
-              ],
-              "Effect": "Deny",
+              "Effect": "Allow",
               "Resource": [
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:aws:iam::",
-                      {
-                        "Ref": "AWS::AccountId"
-                      },
-                      ":",
-                      "policy/adminManaged/*"
-                    ]
-                  ]
-                },
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:aws:iam::",
-                      {
-                        "Ref": "AWS::AccountId"
-                      },
-                      ":",
-                      "user/adminManaged/*"
-                    ]
-                  ]
-                },
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:aws:iam::",
-                      {
-                        "Ref": "AWS::AccountId"
-                      },
-                      ":",
-                      "group/adminManaged/*"
-                    ]
-                  ]
-                },
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:aws:iam::",
-                      {
-                        "Ref": "AWS::AccountId"
-                      },
-                      ":",
-                      "federated-user/adminManaged/*"
-                    ]
-                  ]
-                },
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:aws:iam::",
-                      {
-                        "Ref": "AWS::AccountId"
-                      },
-                      ":",
-                      "mfa/adminManaged/*"
-                    ]
-                  ]
-                },
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:aws:iam::",
-                      {
-                        "Ref": "AWS::AccountId"
-                      },
-                      ":",
-                      "server-certificate/adminManaged/*"
-                    ]
-                  ]
-                },
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:aws:iam::",
-                      {
-                        "Ref": "AWS::AccountId"
-                      },
-                      ":",
-                      "role/adminManaged/*"
-                    ]
-                  ]
-                }
+                "arn:aws:iam::*:instance-profile/*",
+                "arn:aws:iam::*:server-certificate/*",
+                "arn:aws:iam::*:role/*"
               ]
             },
             {
+              "Sid": "ShowOtherUsers",
               "Action": [
-                "aws-portal:Modify*"
+                "iam:ListUsers",
+                "iam:GetUser",
+                "iam:GetLoginProfile",
+                "iam:ListGroupsForUser",
+                "iam:ListAccessKeys",
+                "iam:ListUserPolicies",
+                "iam:GetUserPolicy",
+                "iam:ListSigningCertificates"
               ],
-              "Effect": "Deny",
-              "Resource": "*"
+              "Effect": "Allow",
+              "Resource": [
+                "arn:aws:iam::*:user/*"
+              ]
             },
             {
-              "Effect": "Deny",
+              "Sid": "AllowAssumeRolesInOtherAccounts",
               "Action": "sts:AssumeRole",
-              "Resource":  [ {
+              "Effect": "Allow",
+              "Resource": "arn:aws:iam::*:role/*"
+            },
+            {
+              "Sid": "CannotAssumeRolesInThisAccount",
+              "Action": "sts:AssumeRole",
+              "Effect": "Deny",
+              "Resource": {
                 "Fn::Join": [
                   "",
                   [
@@ -211,16 +107,10 @@
                     "role/*"
                   ]
                 ]
-              }],
-              "Condition": {
-                "StringLike": {
-                  "aws:SourceArn": "arn:aws:iam::*:assumed-role/*"
-                }
-              },
-              "Sid": "CannotAssumeRolesInThisAccount"
+              }
             },
             {
-              "Effect": "Deny",
+              "Sid": "DenyChangeVPCParameters",
               "Action": [
                 "ec2:AssociateDhcpOptions",
                 "ec2:AssociateRouteTable",
@@ -242,34 +132,39 @@
                 "ec2:DisassociateRouteTable",
                 "ec2:Replace*"
               ],
+              "Effect": "Deny",
               "Resource": [
                 "*"
-              ],
-              "Sid": "DenyChangeVPCParameters"
+              ]
             },
             {
-              "Effect": "Deny",
+              "Sid": "HonorDeletionProtectionOnRDSDBInstances",
               "Action": "rds:DeleteDBInstance",
+              "Effect": "Deny",
               "Resource": "arn:aws:rds:*:*:db:*",
               "Condition": {
-                "StringEquals": {
+                "streq": {
                   "rds:db-tag/deletion-protection": [
                     "true"
                   ]
                 }
-              },
-              "Sid": "HonorDeletionProtectionOnRDSDBInstances"
+              }
+            },
+            {
+              "Sid": "RestrictCloudTrail",
+              "Effect": "Deny",
+              "Action": "cloudtrail:*",
+              "Resource": "*"
             }
-          ],
-          "Version": "2012-10-17"
+          ]
         },
         "Roles": [
           {
             "Ref": "developerRoleName"
           }
         ]
-      },
-      "Type": "AWS::IAM::ManagedPolicy"
+      }
     }
   }
 }
+

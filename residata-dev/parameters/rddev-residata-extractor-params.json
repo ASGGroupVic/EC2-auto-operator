@@ -8,5 +8,11 @@
   },
   {  "ParameterKey": "ArchiveObjctName",
     "ParameterValue": "agent-rpt-dev/historical"
+  },
+  {  "ParameterKey": "AppBucketName",
+    "ParameterValue": "agent-rpt-dev"
+  },
+  {  "ParameterKey": "CRMObjctName",
+    "ParameterValue": "residata-cdm-prod/AccountManagers"
   }
 ]

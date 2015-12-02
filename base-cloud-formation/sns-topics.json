@@ -5,7 +5,7 @@
       "EventTopic":{  
          "Type":"AWS::SNS::Topic",
          "Properties":{  
-            "TopicName":"TheExperience",
+            "TopicName":"residata-events",
             "DisplayName":"residata-events"
          }
       }

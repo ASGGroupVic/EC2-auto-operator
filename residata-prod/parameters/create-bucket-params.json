@@ -16,7 +16,7 @@
     "ParameterValue": "resi-data-prod@rea-group.com"
   },
   {
-    "ParameterKey": "principalList",
-    "ParameterValue": "arn:aws:iam::177242442824:root,arn:aws:iam::563560393941:root"
+    "ParameterKey": "shipperprincipalList",
+    "ParameterValue": "arn:aws:iam::177242442824:role/DEV-deployment-role-Shipper-CN4MZ048S4Q7,arn:aws:iam::563560393941:role/deployment-role-Shipper-LH0ESS1XD9XW"
   }
 ]

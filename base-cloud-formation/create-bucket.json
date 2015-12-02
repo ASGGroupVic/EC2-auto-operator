@@ -18,7 +18,7 @@
       "Description":"Name of S3 bucket contract info",
       "Type": "String"
     } ,
-    "principalList": {
+    "shipperprincipalList": {
       "Description":"list of AWS AccountIDs that permitted access",
       "Type": "CommaDelimitedList"
     }
@@ -52,7 +52,7 @@
           "Statement":[
             {
               "Principal":{
-                "AWS": {"Ref":"principalList"}
+                "AWS": {"Ref":"shipperprincipalList"}
               },
               "Action":[
                 "s3:Get*",
@@ -151,7 +151,7 @@
             },
             {
               "Principal":{
-                "AWS":{"Ref":"principalList"}
+                "AWS":{"Ref":"shipperprincipalList"}
               },
               "Action":[
                 "s3:Get*",
@@ -234,19 +234,7 @@
           "Statement":[
             {
               "Principal": {
-                "AWS": {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:aws:iam::",
-                      {
-                        "Ref": "AWS::AccountId"
-                      },
-                      ":",
-                      "root"
-                    ]
-                  ]
-                }
+                "Service": "ec2.amazonaws.com"
               },
               "Action":[
                 "s3:Get*",
