@@ -72,17 +72,19 @@ Edit [params](residata-prod/parameters/security-group-params.json) to set `VpcId
 
 `rake residata_prod:create_prod_SG`
 
+###Shipper Role
+
+[amiRegisterBucketName](residata-prod/parameters/shipper-role-params.json) should point at bucket created in last step
+
+`rake residata_prod:create_prod_shipperrole`
+
+
 ###S3 Buckets
 
 Ensure [params](residata-prod/parameters/create-bucket-params.json) are OK, and bucket name must be lowercase. 
 
 `rake residata_prod:create_prod_bucket`
 
-###Shipper Role
-
-[amiRegisterBucketName](residata-prod/parameters/shipper-role-params.json) should point at bucket created in last step
-
-`rake residata_prod:create_prod_shipperrole`
 
 ### Assume Role for the application residata-extractor
 
