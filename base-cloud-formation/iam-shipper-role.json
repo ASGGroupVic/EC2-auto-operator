@@ -65,6 +65,7 @@
                     "cloudformation:UpdateStack",
                     "cloudformation:ValidateTemplate",
                     "cloudwatch:PutMetricAlarm",
+                    "cloudwatch:DeleteAlarms",
                     "ec2:*ImageAttribute",
                     "ec2:*SecurityGroup*",
                     "ec2:AllocateAddress",
