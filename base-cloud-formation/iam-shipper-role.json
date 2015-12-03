@@ -16,10 +16,12 @@
           "Version": "2012-10-17",
           "Statement": [
             {
-              "Sid": "",
               "Effect": "Allow",
               "Principal": {
-                "AWS": "arn:aws:iam::871035937574:root"
+                "AWS": "arn:aws:iam::871035937574:root",
+                "Service":[
+                  "ec2.amazonaws.com"
+                ]
               },
               "Action": "sts:AssumeRole"
             }
@@ -53,6 +55,7 @@
                     "autoscaling:SuspendProcesses",
                     "autoscaling:TerminateInstanceInAutoScalingGroup",
                     "autoscaling:UpdateAutoScalingGroup",
+                    "autoscaling:EnableMetricsCollection",
                     "cloudformation:CreateStack",
                     "cloudformation:DeleteStack",
                     "cloudformation:DescribeStackEvents",
