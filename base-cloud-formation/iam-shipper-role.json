@@ -56,6 +56,7 @@
                     "autoscaling:TerminateInstanceInAutoScalingGroup",
                     "autoscaling:UpdateAutoScalingGroup",
                     "autoscaling:EnableMetricsCollection",
+                    "autoscaling:DisableMetricsCollection",
                     "cloudformation:CreateStack",
                     "cloudformation:DeleteStack",
                     "cloudformation:DescribeStackEvents",
