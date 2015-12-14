@@ -55,7 +55,9 @@
                 "AWS": {"Ref":"shipperprincipalList"}
               },
               "Action":[
-                "s3:List*"
+                "s3:List*",
+                "s3:GetObject",
+                "s3:PutObject"
               ],
               "Effect":"Allow",
               "Resource":[
