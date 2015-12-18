@@ -12,6 +12,10 @@
   "ParameterValue": "agent-rpt-dev"
   },
   {
+    "ParameterKey": "drillBucketName",
+    "ParameterValue": "drilldev"
+  },
+  {
     "ParameterKey": "EmailAddress",
     "ParameterValue": "resi-data-dev@rea-group.com"
   },

@@ -1,0 +1,10 @@
+[
+  {
+    "ParameterKey": "IREDataBucketName",
+    "ParameterValue": "iredata"
+  },
+  {
+    "ParameterKey": "principalList",
+    "ParameterValue": ""
+  }
+]

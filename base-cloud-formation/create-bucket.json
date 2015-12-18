@@ -10,6 +10,10 @@
       "Description":"Name of S3 bucket for residata agent reports",
       "Type":"String"
     },
+    "drillBucketName":{
+      "Description":"Name of S3 bucket for Drill Server",
+      "Type":"String"
+    },
     "elasticLoadBalancingBucketName":{
       "Description":"Name of S3 bucket for elb logs",
       "Type":"String"
@@ -260,6 +264,78 @@
                       "arn:aws:s3:::",
                       {
                         "Ref":"agentReportBucketName"
+                      },
+                      "/*"
+                    ]
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "DrillBucket":{
+      "Type":"AWS::S3::Bucket",
+      "Properties":{
+        "AccessControl":"Private",
+        "BucketName":{
+          "Ref":"drillBucketName"
+        },
+        "Tags":[
+          {
+            "Key": "application",
+            "Value": "Apache Drill Standalone Server"
+          },
+          {
+            "Key": "contact",
+            "Value":  {"Ref": "EmailAddress"}
+          },
+          {
+            "Key": "lob",
+            "Value": "Resi Data Analytics"
+          }
+        ]
+      }
+    },
+    "DrillBucketNamePolicy":{
+      "Type":"AWS::S3::BucketPolicy",
+      "DependsOn": [
+        "DrillBucket"
+      ],
+      "Properties":{
+        "Bucket":{
+          "Ref":"drillBucketName"
+        },
+        "PolicyDocument":{
+          "Statement":[
+            {
+              "Principal": {
+                "Service": "ec2.amazonaws.com"
+              },
+              "Action":[
+                "s3:List*"
+              ],
+              "Effect":"Allow",
+              "Resource":[
+                {
+                  "Fn::Join":[
+                    "",
+                    [
+                      "arn:aws:s3:::",
+                      {
+                        "Ref":"drillBucketName"
+                      }
+                    ]
+                  ]
+                },
+                {
+                  "Fn::Join":[
+                    "",
+                    [
+                      "arn:aws:s3:::",
+                      {
+                        "Ref":"drillBucketName"
                       },
                       "/*"
                     ]

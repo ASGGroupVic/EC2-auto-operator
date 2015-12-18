@@ -12,6 +12,10 @@
     "ParameterValue": "residatalake"
   },
   {
+    "ParameterKey": "drillBucketName",
+    "ParameterValue": "drillprod"
+  },
+  {
     "ParameterKey": "EmailAddress",
     "ParameterValue": "resi-data-prod@rea-group.com"
   },

@@ -1,0 +1,10 @@
+[
+  {
+    "ParameterKey": "IREDataBucketName",
+    "ParameterValue": "iredata"
+  },
+  {
+    "ParameterKey": "principalList",
+    "ParameterValue": "arn:aws:iam::177242442824:role/DEV-residata-extractor-role-AssumeRole-HZMT7CJDVN3S"
+  }
+]

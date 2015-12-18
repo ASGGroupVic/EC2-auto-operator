@@ -65,6 +65,11 @@ namespace :residata_dev do
   task :create_dev_SplunkFw do
     update_stack('DEV-SplunkFw', 'base-cloud-formation/splunkforwarder.json', 'residata-dev/parameters/rddev-splunkforwarder-params.json')
   end
+
+  desc "Allow Dev extractor access IREData S3 bucket"
+  task :dev_IREs3bucketAccess do
+    update_stack('s3AccessPolicy', 'base-cloud-formation/cross-acct-bucketpolicy.json', 'residata-dev/parameters/rddev-cross-acct-bucket-params.json')
+  end
 end
 
 
@@ -115,5 +120,10 @@ namespace :residata_prod do
   desc "Create a Splunkforwarder Server to Prod"
   task :create_prod_SplunkFw do
     update_stack('SplunkFw', 'base-cloud-formation/splunkforwarder.json', 'residata-prod/parameters/splunkforwarder-params.json')
+  end
+
+  desc "Allow extractor sync IREData S3 bucket"
+  task :IREs3bucketAccess do
+    update_stack('s3AccessPolicy', 'base-cloud-formation/cross-acct-bucketpolicy.json', 'residata-prod/parameters/cross-acct-bucket-params.json')
   end
 end
