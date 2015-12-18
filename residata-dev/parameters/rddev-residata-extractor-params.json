@@ -14,5 +14,8 @@
   },
   {  "ParameterKey": "CRMObjctName",
     "ParameterValue": "residata-cdm-prod/AccountManagers"
+  },
+  {  "ParameterKey": "IREBucketName",
+    "ParameterValue": "iredata"
   }
 ]

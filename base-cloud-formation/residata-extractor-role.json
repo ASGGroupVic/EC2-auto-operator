@@ -21,6 +21,10 @@
     "CRMObjctName": {
       "Description": "S3Bucket Object Name for Data Archiving",
       "Type": "String"
+    } ,
+    "IREBucketName": {
+      "Description": "S3Bucket Object Name for Data Archiving",
+      "Type": "String"
     }
   },
   "Resources": {
@@ -153,6 +157,39 @@
                           "arn:aws:s3:::",
                           {
                             "Ref":"CRMObjctName"
+                          },
+                          "/*"
+                        ]
+                      ]
+                    }
+                  ],
+                  "Action": [
+                    "s3:GetObject",
+                    "s3:ListBucket",
+                    "s3:GetBucketLocation"
+                  ],
+                  "Effect": "Allow"
+                },
+                {
+                  "Resource": [
+                    {
+                      "Fn::Join":[
+                        "",
+                        [
+                          "arn:aws:s3:::",
+                          {
+                            "Ref":"IREBucketName"
+                          }
+                        ]
+                      ]
+                    },
+                    {
+                      "Fn::Join":[
+                        "",
+                        [
+                          "arn:aws:s3:::",
+                          {
+                            "Ref":"IREBucketName"
                           },
                           "/*"
                         ]
