@@ -5,6 +5,6 @@
   },
   {
     "ParameterKey": "principalList",
-    "ParameterValue": "arn:aws:iam::177242442824:role/DEV-residata-extractor-role-AssumeRole-HZMT7CJDVN3S"
+    "ParameterValue": "arn:aws:iam::177242442824:role/DEV-residata-extractor-role-AssumeRole-HZMT7CJDVN3S,arn:aws:iam::177242442824:user/Drilluser"
   }
 ]
