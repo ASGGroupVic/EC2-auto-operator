@@ -18,7 +18,6 @@
             {
               "Effect": "Allow",
               "Principal": {
-                "AWS": "arn:aws:iam::871035937574:root",
                 "Service":[
                   "ec2.amazonaws.com"
                 ]
