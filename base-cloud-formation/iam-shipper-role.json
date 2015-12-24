@@ -5,6 +5,10 @@
     "s3resourcelist": {
       "Description":"list of resources allows s3 permission",
       "Type": "CommaDelimitedList"
+    },
+    "principalList": {
+      "Description":"list of principals",
+      "Type": "CommaDelimitedList"
     }
   },
   "Resources": {
@@ -18,6 +22,7 @@
             {
               "Effect": "Allow",
               "Principal": {
+                "AWS": {"Ref":"principalList"},
                 "Service":[
                   "ec2.amazonaws.com"
                 ]
@@ -149,7 +154,11 @@
                 },
 		        {
               	  "Resource": {"Ref":"s3resourcelist"},
-              	  "Action": "s3:*",
+              	  "Action": [
+                    "s3:List*",
+                    "s3:Get*",
+                    "s3:PutObject"
+                  ],
               	  "Effect": "Allow"
  	            },
                 {
