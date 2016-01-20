@@ -13,6 +13,12 @@ namespace :residata_allEnv do
   task :create_sns_topics do
     update_stack('sns-topics', 'base-cloud-formation/sns-topics.json')
   end
+
+  desc "ASG Notification Access Role"
+  task :create_asg_role do
+    update_stack('asg', 'base-cloud-formation/autoscallinggroup-notification-role.json')
+  end
+
 end
 
 namespace :residata_dev do

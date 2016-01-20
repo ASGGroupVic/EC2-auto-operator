@@ -1,6 +1,6 @@
 {  
    "AWSTemplateFormatVersion":"2010-09-09",
-   "Description":"SNS Topics for Information Systems",
+   "Description":"SNS Topics for Resi Data",
    "Resources":{  
       "EventTopic":{  
          "Type":"AWS::SNS::Topic",
