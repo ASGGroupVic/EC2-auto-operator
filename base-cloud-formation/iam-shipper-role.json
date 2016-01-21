@@ -120,6 +120,7 @@
                     "iam:AddRoleToInstanceProfile",
                     "iam:CreateInstanceProfile",
                     "iam:CreateRole",
+                    "iam:CreatePolicy",
                     "iam:DeleteInstanceProfile",
                     "iam:DeleteRole",
                     "iam:DeleteRolePolicy",
