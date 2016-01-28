@@ -16,7 +16,7 @@ namespace :residata_allEnv do
 
   desc "ASG Notification Access Role"
   task :create_asg_role do
-    update_stack('asg', 'base-cloud-formation/autoscallinggroup-notification-role.json')
+    update_stack('asg-notify-role', 'base-cloud-formation/autoscallinggroup-notification-role.json')
   end
 
 end

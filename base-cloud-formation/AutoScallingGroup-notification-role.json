@@ -2,7 +2,7 @@
   "AWSTemplateFormatVersion": "2010-09-09",
   "Description": "IAM Role for the ASG notification access",
   "Resources": {
-    "NotificationAccessRole": {
+    "ASGNotificationAccessRole": {
       "Type": "AWS::IAM::Role",
       "Properties": {
         "AssumeRolePolicyDocument": {
@@ -42,7 +42,7 @@
   "Outputs": {
     "RoleARN": {
       "Value": {
-        "Fn::GetAtt": [ "NotificationAccessRole", "Arn" ]
+        "Fn::GetAtt": [ "ASGNotificationAccessRole", "Arn" ]
       }
     }
   }
