@@ -1,7 +1,7 @@
 [
   {
     "ParameterKey": "CDAssumeRole",
-    "ParameterValue": "arn:aws:iam::407346673801:role/iam-roles-ResiDataOmnitureReadOnly-1CTSZGOXBCAP4"
+    "ParameterValue": "arn:aws:iam::467365057014:role/iam-roles-ResiDataOmnitureReadOnly-1P86AHDZKA4DY"
   },
   {  "ParameterKey": "AppObjctName",
     "ParameterValue": "residatalake/rawdata"
