@@ -7,7 +7,6 @@ This repository contains cloudformation scripts to setup an EC2 Auto Operator in
 - [base-cloud-formation/](base-cloud-formation/):  templates common across all environments
 - [idm-dev/](idm-dev/):  templates & parameters for Dev
 
-##{Env} Setup
 
 ###Install Tools
 
