@@ -1,0 +1,18 @@
+[
+  {
+    "ParameterKey":"SourceCodeFullPathS3",
+    "ParameterValue":"https://s3-ap-southeast-2.amazonaws.com/xxxxxxx/sourcecode/ec2_operator.py"
+  },
+  {
+    "ParameterKey":"SourceCodeS3Bucket",
+    "ParameterValue":"xxxxxxxx/sourcecode"
+  },
+  {
+    "ParameterKey":"snsTopic",
+    "ParameterValue":"arn:aws:sns:ap-southeast-2:xxxxx:idm-warning-events"
+  },
+  {
+    "ParameterKey":"SSHLocation",
+    "ParameterValue":"x.x.x.x/xx"
+  }
+]
