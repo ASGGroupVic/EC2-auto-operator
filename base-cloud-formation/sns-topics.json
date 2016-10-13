@@ -1,13 +1,33 @@
 {  
    "AWSTemplateFormatVersion":"2010-09-09",
-   "Description":"SNS Topics for Resi Data",
-   "Resources":{  
+   "Description":"SNS Topics for IDM Events",
+   "Parameters": {
+      "AdminEmailAddress": {
+         "Description": "The email to where notifications will be sent",
+         "Type": "String"
+      }
+   },
+   "Resources":{
       "EventTopic":{  
          "Type":"AWS::SNS::Topic",
          "Properties":{  
-            "TopicName":"residata-events",
-            "DisplayName":"residata-events"
+            "TopicName":"idm-warning-events",
+            "DisplayName":"idm-warning-events",
+            "Subscription" : [ {
+               "Endpoint" : {
+                 "Ref": "AdminEmailAddress"
+               },
+               "Protocol" : "email"
+            } ]
          }
+      }
+   },
+   "Outputs": {
+      "output": {
+         "Value": {
+            "Ref": "EventTopic"
+         },
+         "Description": "ARN number as one of parameters to launch EC2 Operator"
       }
    }
 }
