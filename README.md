@@ -1,4 +1,4 @@
-# AWS Ec2-AutoOperator
+# AWS EC2-AutoOperator
 
 This repository contains cloudformation scripts to setup an EC2 Auto Operator in an AWS account.
 
