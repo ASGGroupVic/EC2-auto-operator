@@ -28,7 +28,7 @@ rake IDM_allEnv:create_sns_topics   # step1:create sns event topics
 Assumes you've configured AWS command line interface via the command
 
 aws configure
-```
+
 
 ####Create a SNS with your administrator's email for AWS account
 
