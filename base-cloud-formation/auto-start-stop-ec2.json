@@ -1,0 +1,341 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "Launch an EC2 Operator to perform auto-start and auto-stop instances for all regions.",
+  "Parameters": {
+    "InstanceType" : {
+      "Description" : "Instance type for EC2 Operator",
+      "Type" : "String",
+      "Default" : "t2.micro",
+      "AllowedValues" : [ "t2.micro","t2.small","t2.medium" ],
+      "ConstraintDescription" : "must be a valid EC2 instance type."
+    },
+    "snsTopic":{
+      "Description" : "ARN number of a SNS that will email to AWS Admin if EC2 Operator wasn't launched successfully ",
+      "Type" : "String",
+      "ConstraintDescription" : "must be a ARN number."
+    },
+    "KeyName": {
+      "Description": "Name of an existing EC2 KeyPair to enable SSH access to the instance",
+      "Type": "String",
+      "Default": "IDM_GenericKeyPair"
+    },
+    "SourceCodeFullPathS3": {
+      "Description": "S3 bucket https URL where stores the ec2-operator.py",
+      "Type": "String"
+    },
+    "SourceCodeS3Bucket": {
+      "Description": "The S3 bucket name and path contain the python source code",
+      "Type": "String"
+    },
+    "SSHLocation" : {
+      "Description" : " The SMS Office IP address range that can be used to SSH to the EC2 instance",
+      "Type": "String",
+      "MinLength": "9",
+      "MaxLength": "18",
+      "Default": "0.0.0.0/0",
+      "AllowedPattern": "(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})/(\\d{1,2})",
+      "ConstraintDescription": "must be a valid IP CIDR range of the form x.x.x.x/x."
+    }
+  },
+  "Mappings" : {
+    "RegionMap" : {
+      "us-east-1"      : { "AMI" : "ami-08842d60" },
+      "us-west-1"      : { "AMI" : "ami-cfa8a18a" },
+      "us-west-2"      : { "AMI" : "ami-8786c6b7" },
+      "eu-west-1"      : { "AMI" : "ami-748e2903" },
+      "sa-east-1"      : { "AMI" : "ami-956cc688" },
+      "ap-southeast-1" : { "AMI" : "ami-d6e1c584" },
+      "ap-southeast-2" : { "AMI" : "ami-fd4724c7" },
+      "ap-northeast-1" : { "AMI" : "ami-35072834" }
+    }
+  },
+  "Resources": {
+    "OperatorInstanceProfile": {
+      "Type": "AWS::IAM::InstanceProfile",
+      "Properties": {
+        "Path": "/",
+        "Roles": [
+          {
+            "Ref": "OperatorRole"
+          }
+        ]
+      }
+    },
+    "OperatorRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "sts:AssumeRole"
+              ],
+              "Effect": "Allow",
+              "Principal": {
+                "Service": [
+                  "ec2.amazonaws.com"
+                ]
+              }
+            }
+          ]
+        },
+        "Path": "/",
+        "Policies": [
+          {
+            "PolicyDocument": {
+              "Statement": [
+                {
+                  "Action": [
+                    "ec2:DescribeInstances",
+                    "ec2:StartInstances",
+                    "ec2:StopInstances"
+                  ],
+                  "Effect": "Allow",
+                  "Resource": "*"
+                },
+                {
+                  "Action": [
+                    "s3:ListBucket",
+                    "s3:GetObject",
+                    "s3:GetBucketLocation"
+                  ],
+                  "Resource": [
+                   {
+                    "Fn::Join":[
+                      "",
+                      [
+                        "arn:aws:s3:::",
+                        {
+                          "Ref":"SourceCodeS3Bucket"
+                        },
+                        "/*"
+                      ]
+                    ]
+                   }
+                  ],
+                  "Effect": "Allow"
+                }
+              ]
+            },
+            "PolicyName": "EC2OperatorPolicy"
+          }
+        ]
+      }
+    },
+    "SecurityGroup": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "GroupDescription": "EC2 Operator Admin Access",
+        "SecurityGroupIngress": [
+          {
+            "IpProtocol": "tcp",
+            "FromPort": "22",
+            "ToPort": "22",
+            "CidrIp": {
+              "Ref": "SSHLocation"
+            }
+          }
+        ]
+      }
+    },
+    "LaunchConfiguration": {
+      "Type": "AWS::AutoScaling::LaunchConfiguration",
+      "Properties": {
+        "IamInstanceProfile": {
+          "Ref": "OperatorInstanceProfile"
+        },
+        "SecurityGroups": [
+          {
+            "Ref": "SecurityGroup"
+          }
+        ],
+        "ImageId": {
+          "Fn::FindInMap": [
+            "RegionMap",
+            {
+              "Ref": "AWS::Region"
+            },
+            "AMI"
+          ]
+        },
+        "InstanceType": {
+          "Ref": "InstanceType"
+        },
+        "KeyName": {
+          "Ref": "KeyName"
+        },
+        "UserData": {
+          "Fn::Base64": {
+            "Fn::Join": [
+              "",
+              [
+                "#!/bin/bash -v\n",
+                "yum update -y aws-cfn-bootstrap\n",
+                "# Install python-pip, gcc and ec2 oeprator\n",
+                "/opt/aws/bin/cfn-init --stack ",
+                {
+                  "Ref": "AWS::StackId"
+                },
+                " --region ",
+                {
+                  "Ref": "AWS::Region"
+                },
+                " --resource LaunchConfiguration\n",
+                "# Set up ec2 operator\n",
+                "pip install croniter\n",
+                "OPERATOR='/home/ec2-user/ec2_operator.py > /var/log/ec2-operator.log 2>&1'\n",
+                "echo \"*/5 * * * * root python $OPERATOR \" >> /etc/crontab\n",
+                "# Set Timezone\n",
+                "unlink /etc/localtime\n",
+                "ln -s /usr/share/zoneinfo/Australia/Melbourne /etc/localtime\n",
+                "echo `date`\n"
+              ]
+            ]
+          }
+        }
+      },
+      "Metadata": {
+        "AWS::CloudFormation::Init": {
+          "config": {
+            "packages": {
+              "yum": {
+                "python26-pip": [],
+                "gcc": []
+              }
+            },
+            "files": {
+              "/home/ec2-user/ec2_operator.py": {
+                "source": {
+                  "Ref": "SourceCodeFullPathS3"
+                },
+                "mode": "000644",
+                "owner": "ec2-user",
+                "group": "ec2-user"
+              }
+            }
+          }
+        }
+      }
+    },
+    "AutoScalingGroup": {
+      "Type": "AWS::AutoScaling::AutoScalingGroup",
+      "Properties": {
+        "AvailabilityZones": { "Fn::GetAZs" : "" },
+        "NotificationConfiguration": {
+          "TopicARN": {
+            "Ref": "snsTopic"
+          },
+          "NotificationTypes": [
+            "autoscaling:EC2_INSTANCE_LAUNCH_ERROR",
+            "autoscaling:EC2_INSTANCE_TERMINATE_ERROR"
+          ]
+        },
+        "HealthCheckGracePeriod": 120,
+        "HealthCheckType": "EC2",
+        "LaunchConfigurationName": {
+          "Ref": "LaunchConfiguration"
+        },
+        "MinSize": 0,
+        "MaxSize": 1,
+        "DesiredCapacity": 0,
+        "MetricsCollection": [
+          {
+            "Granularity": "1Minute",
+            "Metrics": [
+              "GroupInServiceInstances"
+            ]
+          }
+        ],
+        "Tags": [
+          {
+            "Key": "CloudFormationStack",
+            "Value": {
+              "Ref": "AWS::StackName"
+            },
+            "PropagateAtLaunch": true
+          },
+          {
+            "Key": "LOB",
+            "Value": "IDM",
+            "PropagateAtLaunch": true
+          },
+          {
+            "Key": "application",
+            "Value": "EC2-Operator",
+            "PropagateAtLaunch": true
+          },
+          {
+            "Key": "Name",
+            "Value": "SMS - EC2-Operator - AutoScaling",
+            "PropagateAtLaunch": true
+          }
+        ]
+      }
+    },
+    "AutoScalingGroupSchedule": {
+      "Type": "AWS::AutoScaling::ScheduledAction",
+      "Properties": {
+        "AutoScalingGroupName": {
+          "Ref": "AutoScalingGroup"
+        },
+        "DesiredCapacity": 1,
+        "Recurrence": "20 6,20 * * *"
+      }
+    },
+    "ScalingPolicyDown": {
+      "Type": "AWS::AutoScaling::ScalingPolicy",
+      "Properties": {
+        "AdjustmentType": "ExactCapacity",
+        "AutoScalingGroupName": {
+          "Ref": "AutoScalingGroup"
+        },
+        "ScalingAdjustment": "0"
+      }
+    },
+    "CloudWatchAlarmDown": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Properties": {
+        "ActionsEnabled": "true",
+        "AlarmActions": [
+          {
+            "Ref": "ScalingPolicyDown"
+          }
+        ],
+        "AlarmDescription": {
+          "Fn::Join": [
+            "",
+            [
+              {
+                "Ref": "AWS::StackName"
+              },
+              " instances is terminated in ASG"
+            ]
+          ]
+        },
+        "Dimensions": [
+          {
+            "Name": "AutoScalingGroupName",
+            "Value": {
+              "Ref": "AutoScalingGroup"
+            }
+          }
+        ],
+        "ComparisonOperator": "GreaterThanOrEqualToThreshold",
+        "EvaluationPeriods": "5",
+        "MetricName": "GroupInServiceInstances",
+        "Namespace": "AWS/AutoScaling",
+        "Period": "2100",
+        "Statistic": "Minimum",
+        "Threshold": "1"
+      }
+    }
+  },
+  "Outputs": {
+    "output": {
+      "Value": {
+        "Ref": "AutoScalingGroup"
+      },
+      "Description": "AutoScalingGroup Id to launch the ec2 operator instance"
+    }
+  }
+}
