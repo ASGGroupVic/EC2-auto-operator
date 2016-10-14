@@ -29,15 +29,15 @@ Assumes you've configured AWS command line interface via the command
 
 aws configure
 
-####upload the file ec2-operator.py to your S3 bucket
-####Create a SNS with your administrator's email for AWS account
+####+Upload the file ec2-operator.py to your S3 bucket
+####+Create a SNS with your administrator's email for AWS account
 
 Edit [Admin Email paramerter](idm-dev/parameters/idm-sns-topics-params.json) to set `AdminEmailAddress`.
 
 `rake IDM_allEnv:create_sns_topics`
 
 
-####Deploy EC2 Auto Operator
+####+Deploy EC2 auto operator
 
 Edit [params](idm-dev/parameters/idm-auto-ec2-params.json) to set
 
