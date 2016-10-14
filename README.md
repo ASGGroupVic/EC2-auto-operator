@@ -40,11 +40,11 @@ Edit [Admin Email paramerter](idm-dev/parameters/idm-sns-topics-params.json) to 
 ####+Deploy EC2 auto operator
 
 Edit [params](idm-dev/parameters/idm-auto-ec2-params.json) to set
-
-`SourceCodeFullPathS3` - S3 bucket https url where stores the ec2-operator.py
-`SourceCodeS3Bucket` - The S3 bucket name and path contain the ec2-operator.py
-`snsTopic` - ARN number of a SNS from the output above
-`KeyName` - Name of an existing keypair - pem file in your AWS
-
+```
+SourceCodeFullPathS3 - S3 bucket https url where stores the ec2-operator.py
+SourceCodeS3Bucket - The S3 bucket name and path contain the ec2-operator.py
+snsTopic - ARN number of a SNS from the output above
+KeyName - Name of an existing keypair - pem file in your AWS
+```
 
 `rake IDM_allEnv:create_auto_ec2_operator`
