@@ -1,6 +1,6 @@
 # AWS EC2-AutoOperator
 
-This repository contains cloudformation scripts to setup an EC2 Auto Operator in an AWS account.
+This repository contains auto deployment script in Ruby to rollout two cloudformation stacks into your AWS account. The CF scripts will setup a tool to start and stop your EC2 instances automatically in all regions to control their usage. 
 
 ##Repo Layout
 
@@ -23,11 +23,11 @@ List of tasks that create/update cloudformation deployment stacks in AWS
 Example:
 rake IDM_allEnv:create_sns_topics   # step1:create sns event topics
 ```
-###Start to deploy
+###Deployment
 
 Assumes you've configured AWS command line interface via the command
 
-aws configure
+####aws configure
 
 ####+Upload the file ec2-operator.py to your S3 bucket
 ####+Create a SNS with your administrator's email for AWS account
@@ -35,7 +35,6 @@ aws configure
 Edit [Admin Email paramerter](idm-dev/parameters/idm-sns-topics-params.json) to set `AdminEmailAddress`.
 
 `rake IDM_allEnv:create_sns_topics`
-
 
 ####+Deploy EC2 auto operator
 
@@ -48,3 +47,12 @@ KeyName - Name of an existing keypair - pem file in your AWS
 ```
 
 `rake IDM_allEnv:create_auto_ec2_operator`
+NOTE:This process may take a while to run, before returning an newly created ASG name. Would you like to view the process details or troubleshoot, feel free to login AWS console-> CloudFormation -> Tick the stack 'auto-operator-EC2' -> Click Events tab.
+
+###How to use it
+Set up a schedule with Cron format via tag feature in your EC2 instances. 
+For Example:
+```
+KEY         VALUE
+auto:start  0 9 * * 1-5
+```
