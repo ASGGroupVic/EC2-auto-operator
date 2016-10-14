@@ -1,6 +1,6 @@
 # AWS EC2-AutoOperator
 
-This repository contains auto deployment script in Ruby to rollout two cloudformation stacks into your AWS account. The CF scripts will setup a tool to start and stop your EC2 instances automatically in all regions to control their usage. 
+This repository contains auto deployment script in Ruby to rollout two cloudformation stacks into your AWS account. The CF scripts will setup an AWS application to start and stop your EC2 instances automatically in all regions to control their usage. The app is a highly-available, fault-tolerant, cost-efficient scalable solution for any business who wants to optimize their EC2 costs and still keep the performance & capacity requires.
 
 ##Repo Layout
 
