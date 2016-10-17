@@ -51,7 +51,7 @@ NOTE:This process may take a while to run, before returning an newly created ASG
 
 ###How to use it
 Set up a schedule with Cron format via the tag feature in your EC2 instances. 
-For Example:
+For Example: Automatically start up your instance at 9am from Monday to Friday
 ```
 KEY         VALUE
 auto:start  0 9 * * 1-5
