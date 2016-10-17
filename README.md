@@ -30,7 +30,7 @@ Assumes you've configured AWS command line interface via the command
 ####aws configure
 
 ####+Upload the file ec2-operator.py to your S3 bucket
-####+Create a SNS with your administrator's email for AWS account
+####+Create a SNS topic subscribed by your administrator's email address.
 
 Edit [Admin Email paramerter](idm-dev/parameters/idm-sns-topics-params.json) to set `AdminEmailAddress`.
 
@@ -51,7 +51,7 @@ NOTE:This process may take a while to run, before returning an newly created ASG
 
 ###How to use it
 Set up a schedule with Cron format via the tag feature in your EC2 instances. 
-For Example: Automatically start up your instance at 9am from Monday to Friday
+For Example: Automatically start up your instance at 9am from Monday to Friday.
 ```
 KEY         VALUE
 auto:start  0 9 * * 1-5
