@@ -12,7 +12,7 @@ This repository contains auto deployment script in Ruby to rollout two cloudform
 
 Assumes Ruby 2.1 or higher is installed.
 ```
-git clone git@git.realestate.com.au:resi-lob/residata-aws-infrastructure.git
+git clone https://github.com/SMSManagementAndTechnology/EC2-auto-operator.git
 cd ec2-auto-operator
 bundle install
 bundle exec rake -T
