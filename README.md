@@ -48,7 +48,7 @@ KeyName - Name of an existing keypair - pem file in your AWS
 
 `rake IDM_allEnv:create_auto_ec2_operator`
 ```
-NOTE:This process may take a while to run, before returning an newly created ASG name. Would you like to view the process details or troubleshoot, feel free to login AWS console-> CloudFormation -> Tick the stack 'auto-operator-EC2' -> Click Events tab.
+NOTE:This process may take a while to run, before returning a newly created ASG name. Would you like to view the process details or troubleshoot, feel free to login AWS console-> CloudFormation -> Tick the stack 'auto-operator-EC2' -> Click Events tab.
 ```
 ###How to use it
 Set up a schedule with Cron format via the tag feature in your EC2 instances. 
