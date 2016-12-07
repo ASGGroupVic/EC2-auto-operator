@@ -1,6 +1,8 @@
 # AWS EC2-AutoOperator
 
 This repository contains cloudformation scripts to setup an EC2 Auto Operator in an AWS account.
+The Auto Operator is a t2.micro EC2 instance to be fired up at 7am and again 5pm, which will be running for a seven-hour-period.
+The reason is that some of our Qlik instances needs to be up till 9pm in HK time, where is 3 hours behind us in Summer.
 
 ##Repo Layout
 

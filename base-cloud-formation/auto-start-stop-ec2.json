@@ -279,7 +279,7 @@
           "Ref": "AutoScalingGroup"
         },
         "DesiredCapacity": 1,
-        "Recurrence": "20 6,20 * * *"
+        "Recurrence": "00 6,20 * * *"
       }
     },
     "ScalingPolicyDown": {
@@ -321,7 +321,7 @@
           }
         ],
         "ComparisonOperator": "GreaterThanOrEqualToThreshold",
-        "EvaluationPeriods": "5",
+        "EvaluationPeriods": "10",
         "MetricName": "GroupInServiceInstances",
         "Namespace": "AWS/AutoScaling",
         "Period": "2100",
