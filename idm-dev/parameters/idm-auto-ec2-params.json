@@ -1,11 +1,11 @@
 [
   {
     "ParameterKey":"SourceCodeFullPathS3",
-    "ParameterValue":"https://s3-ap-southeast-2.amazonaws.com/cf-templates-oyc92gadis9r-ap-southeast-2/sourcecode/ec2_operator.py"
+    "ParameterValue":"https://s3-ap-southeast-2.amazonaws.com/xxxxx/sourcecode/ec2_operator.py"
   },
   {
     "ParameterKey":"SourceCodeS3Bucket",
-    "ParameterValue":"cf-templates-oyc92gadis9r-ap-southeast-2/sourcecode"
+    "ParameterValue":"xxxx/sourcecode"
   },
   {
     "ParameterKey":"snsTopic",
@@ -13,6 +13,6 @@
   },
   {
     "ParameterKey":"SSHLocation",
-    "ParameterValue":"0.0.0.0/0"
+    "ParameterValue":"xxxx/x"
   }
 ]
