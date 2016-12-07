@@ -9,7 +9,7 @@
   },
   {
     "ParameterKey":"snsTopic",
-    "ParameterValue":"arn:aws:sns:ap-southeast-2:671866397302:idm-warning-events"
+    "ParameterValue":"arn:aws:sns:ap-southeast-2:xxxx:idm-warning-events"
   },
   {
     "ParameterKey":"SSHLocation",
