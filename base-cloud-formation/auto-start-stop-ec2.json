@@ -321,10 +321,10 @@
           }
         ],
         "ComparisonOperator": "GreaterThanOrEqualToThreshold",
-        "EvaluationPeriods": "10",
+        "EvaluationPeriods": "5",
         "MetricName": "GroupInServiceInstances",
         "Namespace": "AWS/AutoScaling",
-        "Period": "2100",
+        "Period": "4980",
         "Statistic": "Minimum",
         "Threshold": "1"
       }
